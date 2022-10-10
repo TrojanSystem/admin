@@ -1,11 +1,7 @@
-import 'package:ada_bread/dataHub/data/expenses_data.dart';
-import 'package:ada_bread/dataHub/data_model/expense_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-
-import 'update_expense.dart';
 
 class ExpenseItem extends StatelessWidget {
   final List dailyExpense;
@@ -52,7 +48,8 @@ class ExpenseItem extends StatelessWidget {
                               ),
                               Text(
                                 DateFormat.yMMMEd().format(
-                                  DateTime.parse(dailyExpense[index].itemDate),
+                                  DateTime.parse(
+                                      dailyExpense[index]['itemDate']),
                                 ),
                                 style: const TextStyle(
                                   color: Colors.black,
@@ -75,7 +72,7 @@ class ExpenseItem extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    dailyExpense[index].itemName,
+                                    dailyExpense[index]['itemName'],
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 15,
@@ -86,7 +83,7 @@ class ExpenseItem extends StatelessWidget {
                                     height: 5,
                                   ),
                                   Text(
-                                    '${dailyExpense[index].itemQuantity}',
+                                    '${dailyExpense[index]['itemDescription']}',
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 15,
@@ -99,22 +96,23 @@ class ExpenseItem extends StatelessWidget {
                                 children: [
                                   IconButton(
                                     onPressed: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (_) => UpdateExpense(
-                                            index: dailyExpense[index].id,
-                                            existedItemName:
-                                                dailyExpense[index].itemName,
-                                            existedItemDate:
-                                                dailyExpense[index].itemDate,
-                                            existedItemPrice:
-                                                dailyExpense[index].itemPrice,
-                                            existedItemQuantity:
-                                                dailyExpense[index]
-                                                    .itemQuantity,
-                                          ),
-                                        ),
-                                      );
+                                      // Navigator.of(context).push(
+                                      //   MaterialPageRoute(
+                                      //     builder: (_) => UpdateExpense(
+                                      //       index: dailyExpense[index].id,
+                                      //       existedItemName: dailyExpense[index]
+                                      //           ['itemName'],
+                                      //       existedItemDate: dailyExpense[index]
+                                      //           ['itemDate'],
+                                      //       existedItemPrice:
+                                      //           dailyExpense[index]
+                                      //               ['itemPrice'],
+                                      //       existedItemQuantity:
+                                      //           dailyExpense[index]
+                                      //               ['itemQuantity'],
+                                      //     ),
+                                      //   ),
+                                      // );
                                     },
                                     icon: const Icon(
                                       Icons.edit,
@@ -124,28 +122,32 @@ class ExpenseItem extends StatelessWidget {
                                   ),
                                   IconButton(
                                     onPressed: () async {
-                                      Provider.of<ExpensesData>(context,
-                                              listen: false)
-                                          .deleteExpenseList(
-                                              dailyExpense[index].id);
-                                      double totalMinus = Provider.of<
-                                                  ExpensesData>(context,
-                                              listen: false)
-                                          .minusTotalPrice(double.parse(
-                                              dailyExpense[index].itemPrice));
-                                      final updateExpense = ExpenseModel(
-                                        id: dailyExpense[index].id,
-                                        itemName: dailyExpense[index].itemName,
-                                        itemDate: dailyExpense[index].itemDate,
-                                        itemPrice:
-                                            dailyExpense[index].itemPrice,
-                                        itemQuantity:
-                                            dailyExpense[index].itemQuantity,
-                                        total: totalMinus.toString(),
-                                      );
-                                      Provider.of<ExpensesData>(context,
-                                              listen: false)
-                                          .updateExpenseList(updateExpense);
+                                      FirebaseFirestore.instance
+                                          .collection('EmployeeExpenses')
+                                          .doc(dailyExpense[index].id)
+                                          .delete();
+                                      // Provider.of<ExpensesData>(context,
+                                      //         listen: false)
+                                      //     .deleteExpenseList(
+                                      //         dailyExpense[index]);
+                                      // double totalMinus = Provider.of<
+                                      //             ExpensesData>(context,
+                                      //         listen: false)
+                                      //     .minusTotalPrice(double.parse(
+                                      //         dailyExpense[index].itemPrice));
+                                      // final updateExpense = ExpenseModel(
+                                      //   id: dailyExpense[index].id,
+                                      //   itemName: dailyExpense[index].itemName,
+                                      //   itemDate: dailyExpense[index].itemDate,
+                                      //   itemPrice:
+                                      //       dailyExpense[index].itemPrice,
+                                      //   itemQuantity:
+                                      //       dailyExpense[index].itemQuantity,
+                                      //   total: totalMinus.toString(),
+                                      // );
+                                      // Provider.of<ExpensesData>(context,
+                                      //         listen: false)
+                                      //     .updateExpenseList(updateExpense);
                                     },
                                     icon: const Icon(
                                       Icons.delete_forever,
@@ -187,7 +189,7 @@ class ExpenseItem extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              dailyExpense[index].itemPrice,
+                              dailyExpense[index]['itemPrice'],
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 15,

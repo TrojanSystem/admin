@@ -3,7 +3,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../dataHub/data/expenses_data.dart';
+import 'data_storage/expenses_data.dart';
 
 class SummaryExpenseList extends StatelessWidget {
   // final int index;

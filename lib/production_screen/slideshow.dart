@@ -1,27 +1,16 @@
 import 'package:ada_bread/production_screen/slideShowItem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
-import 'package:provider/provider.dart';
-
-import '../dataHub/data/production_data_hub.dart';
 
 class Slide extends StatelessWidget {
-  final List production;
-  const Slide({this.production});
+  final String bale_5;
+  final String bale_10;
+  final String slice;
+  final String bombolino;
+  const Slide({this.bale_10, this.bale_5, this.bombolino, this.slice});
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ProductionModelData>(context).bale_5 =
-        production.isEmpty ? 0 : int.parse(production.first.bale_5);
-    Provider.of<ProductionModelData>(context).bale_10 =
-        production.isEmpty ? 0 : int.parse(production.first.bale_10);
-    Provider.of<ProductionModelData>(context).slice =
-        production.isEmpty ? 0 : int.parse(production.first.slice);
-    Provider.of<ProductionModelData>(context).bombolino =
-        production.isEmpty ? 0 : int.parse(production.first.bombolino);
-
-    final totSum = Provider.of<ProductionModelData>(context).totalProduced();
-
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Container(
@@ -50,33 +39,23 @@ class Slide extends StatelessWidget {
             /// Add the sample image file into the images folder
             children: [
               SlideShowItem(
-                  bale_5: 'አጠቃላይ',
-                  image: 'logo_2.jpg',
-                  value: totSum.toString()),
+                  bale_5: 'አጠቃላይ', image: 'logo_2.jpg', value: 200.toString()),
               SlideShowItem(
                   bale_5: 'ባለ 5 ብር',
                   image: 'bale_5.png',
-                  value: production.isEmpty
-                      ? '0'
-                      : production.first.bale_5.toString()),
+                  value: bale_5 == null ? '0' : bale_5.toString()),
               SlideShowItem(
                   bale_5: 'ባለ 10 ብር',
                   image: 'bale_10.png',
-                  value: production.isEmpty
-                      ? '0'
-                      : production.first.bale_10.toString()),
+                  value: bale_10 == null ? '0' : bale_10.toString()),
               SlideShowItem(
                   bale_5: 'ስላይስ',
                   image: 'slice.png',
-                  value: production.isEmpty
-                      ? '0'
-                      : production.first.slice.toString()),
+                  value: slice == null ? '0' : slice.toString()),
               SlideShowItem(
                   bale_5: 'ቦምቦሊኖ',
                   image: 'donut.png',
-                  value: production.isEmpty
-                      ? '0'
-                      : production.first.bombolino.toString()),
+                  value: bombolino == null ? '0' : bombolino.toString()),
             ],
 
             /// Called whenever the page in the center of the viewport changes.

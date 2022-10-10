@@ -1,9 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-
-import '../dataHub/data/expenses_data.dart';
-import '../dataHub/data_model/expense_model.dart';
 
 class AddExpense extends StatefulWidget {
   const AddExpense({Key key}) : super(key: key);
@@ -30,8 +27,9 @@ class _AddExpenseState extends State<AddExpense> {
 
   final formKey = GlobalKey<FormState>();
   String itemName = '';
+  String itemDescription = '';
   String itemQuantity = '';
-  double itemPrice = 0;
+  String itemPrice = '';
   String itemDate = DateTime.now().toString();
 
   @override
@@ -125,7 +123,7 @@ class _AddExpenseState extends State<AddExpense> {
                       }
                     },
                     onSaved: (value) {
-                      itemQuantity = value;
+                      itemDescription = value;
                     },
                     decoration: InputDecoration(
                       hintText: 'Enter Description',
@@ -144,48 +142,101 @@ class _AddExpenseState extends State<AddExpense> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(18, 18, 18, 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Price',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 18,
+            Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(25, 8, 25, 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Price',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Can\'t be empty';
+                            } else {
+                              return null;
+                            }
+                          },
+                          onSaved: (value) {
+                            itemPrice = value;
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Price',
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Price can\'t be empty';
-                      } else {
-                        return null;
-                      }
-                    },
-                    onSaved: (value) {
-                      itemPrice = double.parse(value);
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Enter Price',
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(25, 8, 25, 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Quantity',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Can\'t be empty';
+                            } else {
+                              return null;
+                            }
+                          },
+                          onSaved: (value) {
+                            itemQuantity = value;
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Quantity',
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(18, 28, 18, 8),
@@ -213,13 +264,15 @@ class _AddExpenseState extends State<AddExpense> {
               onTap: () {
                 if (formKey.currentState.validate()) {
                   formKey.currentState.save();
-                  var model = ExpenseModel(
-                      itemDate: itemDate,
-                      itemName: itemName,
-                      itemPrice: itemPrice.toStringAsFixed(2),
-                      itemQuantity: itemQuantity);
-                  Provider.of<ExpensesData>(context, listen: false)
-                      .addExpenseList(model);
+                  FirebaseFirestore.instance
+                      .collection('EmployeeExpenses')
+                      .add({
+                    'itemName': itemName,
+                    'itemDate': itemDate,
+                    'itemQuantity': itemQuantity,
+                    'itemPrice': itemPrice,
+                    'itemDescription': itemDescription,
+                  });
                   Navigator.of(context).pop();
                 }
               },

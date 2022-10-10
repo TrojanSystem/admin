@@ -1,5 +1,3 @@
-import 'package:ada_bread/production_screen/expense.dart';
-import 'package:ada_bread/production_screen/income.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -9,9 +7,12 @@ import 'package:provider/provider.dart';
 import '../constants.dart';
 import '../dataHub/data/data_storage.dart';
 import '../dataHub/data/order_data_hub.dart';
+import '../production_screen/expense.dart';
+import '../production_screen/income.dart';
 
 class OrderListItem extends StatefulWidget {
-  const OrderListItem({Key key}) : super(key: key);
+  final List monthlyOrder;
+  const OrderListItem({this.monthlyOrder});
 
   @override
   State<OrderListItem> createState() => _OrderListItemState();
@@ -24,21 +25,22 @@ class _OrderListItemState extends State<OrderListItem> {
   Widget build(BuildContext context) {
     double _w = MediaQuery.of(context).size.width;
     final monthSelected = Provider.of<DataStorage>(context).monthOfAYear;
-    final yearFilter = Provider.of<OrderDataHub>(context).orderList;
-    final result = yearFilter
+
+    final result = widget.monthlyOrder
         .where((element) =>
-            DateTime.parse(element.date).year == DateTime.now().year)
+            DateTime.parse(element['date']).year == DateTime.now().year)
         .toList();
 
     var orderListDetail = result
-        .where((element) => DateTime.parse(element.date).month == selectedMonth)
+        .where(
+            (element) => DateTime.parse(element['date']).month == selectedMonth)
         .toList();
 
     double totOrderedKg = 0;
     double totPriceOrder = 0;
-    var quantityOfBread = orderListDetail.map((e) => e.orderedKilo).toList();
+    var quantityOfBread = orderListDetail.map((e) => e['orderedKilo']).toList();
 
-    var priceOfBread = orderListDetail.map((e) => e.totalAmount).toList();
+    var priceOfBread = orderListDetail.map((e) => e['totalAmount']).toList();
     for (int x = 0; x < priceOfBread.length; x++) {
       totPriceOrder += double.parse(priceOfBread[x]);
     }
@@ -153,7 +155,7 @@ class _OrderListItemState extends State<OrderListItem> {
                                     child: Column(
                                       children: [
                                         Text(
-                                          orderListDetail[index].totalAmount,
+                                          orderListDetail[index]['totalAmount'],
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w900,
                                               fontSize: 20),
@@ -183,13 +185,13 @@ class _OrderListItemState extends State<OrderListItem> {
                                         padding:
                                             const EdgeInsets.only(bottom: 8.0),
                                         child: Text(
-                                          orderListDetail[index].name,
+                                          orderListDetail[index]['name'],
                                         ),
                                       ),
                                       subtitle: Text(
                                         DateFormat.yMMMEd().format(
                                           DateTime.parse(
-                                              orderListDetail[index].date),
+                                              orderListDetail[index]['date']),
                                         ),
                                       ),
                                       trailing: Column(
@@ -206,7 +208,7 @@ class _OrderListItemState extends State<OrderListItem> {
                                           ),
                                           Text(
                                             orderListDetail[index]
-                                                .orderedKilo
+                                                    ['orderedKilo']
                                                 .toString(),
                                             style: TextStyle(
                                               color: Colors.green[800],

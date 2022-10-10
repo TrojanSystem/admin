@@ -483,6 +483,7 @@ class _ProductDeliveredToShopInputState
                     formKey.currentState.save();
 
                     FirebaseFirestore.instance.collection('DailyShopSell').add({
+                      'isWhat': 'given',
                       'seller': widget.loggedUser,
                       'bale_5_Sp': bale_5_SP,
                       'bale_10_Sp': bale_10_SP,
@@ -492,7 +493,7 @@ class _ProductDeliveredToShopInputState
                       'bale_10': bale_10,
                       'slice': slice,
                       'bombolino': bombolino,
-                      'producedDate': dateTime
+                      'givenDate': dateTime
                     });
                     Navigator.of(context).pop();
                   }

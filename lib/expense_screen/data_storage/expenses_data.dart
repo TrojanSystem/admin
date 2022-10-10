@@ -1,56 +1,9 @@
-import 'package:ada_bread/dataHub/data_model/production_model.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
-import '../database/production_model_database.dart';
-
-class DailyProductionData extends ChangeNotifier {
-  ProductionModelDatabase dailyProductionDB = ProductionModelDatabase();
-  String totalBale_5;
-  String totalBale_10;
-  String totalSlice;
-  String totalBombolino;
-  bool _isLoading = true;
-
-  List<ProductionModel> _productionList = [];
-
-  List<ProductionModel> get productionList => _productionList;
-
-  bool get isLoading => _isLoading;
-
-  totalSoldData(String bale_5, String bale_10, String slice, String bombolino) {
-    totalBale_5 = bale_5;
-    totalBale_10 = bale_10;
-    totalSlice = slice;
-    totalBombolino = bombolino;
-    // notifyListeners();
-  }
-
-  //
-  // Future loadProductionList() async {
-  //   _isLoading = true;
-  //   notifyListeners();
-  //   _productionList = await dailyProductionDB.getTasks();
-  //   _isLoading = false;
-  //   notifyListeners();
-  // }
-  //
-  // Future addProductionList(ProductionModel task) async {
-  //   await dailyProductionDB.insertTask(task);
-  //   await loadProductionList();
-  //   notifyListeners();
-  // }
-  //
-  // Future updateProductionList(ProductionModel task) async {
-  //   await dailyProductionDB.updateTaskList(task);
-  //   await loadProductionList();
-  //   notifyListeners();
-  // }
-  //
-  // Future deleteProductionList(String task) async {
-  //   await dailyProductionDB.deleteTask(task);
-  //   await loadProductionList();
-  //   notifyListeners();
-  // }
+class ExpensesData extends ChangeNotifier {
+  var totDailySum = 0.0;
+  double totalPrice = 0;
+  double totalIncomePrice = 0;
 
   List daysOfMonth = [
     {

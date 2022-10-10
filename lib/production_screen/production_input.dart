@@ -1,8 +1,6 @@
-import 'package:ada_bread/dataHub/data/daily_production_data.dart';
-import 'package:ada_bread/dataHub/data_model/production_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class ProductionInput extends StatefulWidget {
   const ProductionInput({Key key}) : super(key: key);
@@ -480,18 +478,18 @@ class _ProductionInputState extends State<ProductionInput> {
                 setState(() {
                   if (formKey.currentState.validate()) {
                     formKey.currentState.save();
-                    final addDailyProduct = ProductionModel(
-                        bale_5_Sp: bale_5_SP,
-                        bale_10_Sp: bale_10_SP,
-                        slice_Sp: slice_SP,
-                        bombolino_Sp: bombolino_SP,
-                        bale_5: bale_5,
-                        bale_10: bale_10,
-                        slice: slice,
-                        bombolino: bombolino,
-                        producedDate: dateTime);
-                    Provider.of<DailyProductionData>(context, listen: false)
-                        .addProductionList(addDailyProduct);
+                    FirebaseFirestore.instance.collection('DailySell').add({
+                      'bale_5_Sp': bale_5_SP,
+                      'bale_10_Sp': bale_10_SP,
+                      'slice_Sp': slice_SP,
+                      'bombolino_Sp': bombolino_SP,
+                      'bale_5': bale_5,
+                      'bale_10': bale_10,
+                      'slice': slice,
+                      'bombolino': bombolino,
+                      'producedDate': dateTime
+                    });
+
                     Navigator.of(context).pop();
                   }
                 });
