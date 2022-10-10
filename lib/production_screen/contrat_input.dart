@@ -1,9 +1,6 @@
-import 'package:ada_bread/dataHub/data_model/contract_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-
-import '../dataHub/data/production_data_hub.dart';
 
 class ContratInput extends StatefulWidget {
   const ContratInput({Key key}) : super(key: key);
@@ -232,14 +229,13 @@ class _ContratInputState extends State<ContratInput> {
                 setState(() {
                   if (formKey.currentState.validate()) {
                     formKey.currentState.save();
-                    final addContract = ContractModel(
-                      name: name,
-                      date: dateTime,
-                      quantity: quantity.toString(),
-                      price: price.toString(),
-                    );
-                    Provider.of<ProductionModelData>(context, listen: false)
-                        .addContractList(addContract);
+
+                    FirebaseFirestore.instance.collection('ContratGiven').add({
+                      'name': name,
+                      'date': dateTime,
+                      'quantity': quantity.toString(),
+                      'price': price.toString(),
+                    });
                     Navigator.of(context).pop();
                   }
                 });

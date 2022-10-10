@@ -1,4 +1,5 @@
 import 'package:ada_bread/production_screen/income.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -29,15 +30,15 @@ class _ContractListDetailState extends State<ContractListDetail> {
     final yearFilter = Provider.of<ProductionModelData>(context).contractList;
     final monthFilterList = yearFilter
         .where((element) =>
-            DateTime.parse(element.date).year == DateTime.now().year)
+            DateTime.parse(element['date']).year == DateTime.now().year)
         .toList();
     var todayFilteredContratList = monthFilterList
         .where((element) =>
-            DateTime.parse(element.date).month == selectedMonthForList)
+            DateTime.parse(element['date']).month == selectedMonthForList)
         .toList();
 
     var filterName =
-        todayFilteredContratList.map((e) => e.name).toSet().toList();
+        todayFilteredContratList.map((e) => e['name']).toSet().toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -98,14 +99,15 @@ class _ContractListDetailState extends State<ContractListDetail> {
                   itemCount: filterName.length,
                   itemBuilder: (BuildContext context, int index) {
                     var filterName = todayFilteredContratList
-                        .map((e) => e.name)
+                        .map((e) => e['name'])
                         .toSet()
                         .toList();
                     var todayFilteredContratListForQuantity = monthFilterList
-                        .where((element) => element.name == filterName[index])
+                        .where(
+                            (element) => element['name'] == filterName[index])
                         .toList();
                     var filterGivenPrice = todayFilteredContratListForQuantity
-                        .map((e) => e.price)
+                        .map((e) => e['price'])
                         .toSet()
                         .toList();
                     double totalQuantity = 0;
@@ -113,7 +115,7 @@ class _ContractListDetailState extends State<ContractListDetail> {
                         x < todayFilteredContratListForQuantity.length;
                         x++) {
                       totalQuantity += double.parse(
-                          todayFilteredContratListForQuantity[x].quantity);
+                          todayFilteredContratListForQuantity[x]['quantity']);
                     }
                     double totalPrice = 0;
                     for (int x = 0; x < filterGivenPrice.length; x++) {
@@ -139,9 +141,10 @@ class _ContractListDetailState extends State<ContractListDetail> {
                               IconButton(
                                 color: Colors.red,
                                 onPressed: () {
-                                  Provider.of<ProductionModelData>(context,
-                                          listen: false)
-                                      .deleteContractList(filterName[index]);
+                                  FirebaseFirestore.instance
+                                      .collection('ContratGiven')
+                                      .doc(filterName[index])
+                                      .delete();
                                 },
                                 icon: const Icon(
                                   Icons.delete_forever,

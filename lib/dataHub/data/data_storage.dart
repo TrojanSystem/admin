@@ -1,41 +1,40 @@
 import 'dart:core';
 
-import 'package:ada_bread/dataHub/data_model/contract_model.dart';
 import 'package:flutter/cupertino.dart';
 
 class DataStorage extends ChangeNotifier {
   int index = 0;
   int currentYear = 0;
-  List<ContractModel> contactList = [];
-  List<DailyProductionModel> productionList = [];
+  // List<ContractModel> contactList = [];
+  // List<DailyProductionModel> productionList = [];
   void currentIndex(currentIndex) {
     index = currentIndex;
     notifyListeners();
   }
 
-  void contractList(name, quantity, date, price) {
-    contactList.add(
-      ContractModel(
-        name: name,
-        date: date,
-        quantity: quantity,
-        price: price,
-      ),
-    );
-    notifyListeners();
-  }
-
-  void dailyProductionList(bale_5, bale_10, slice, bombolino) {
-    productionList.add(
-      DailyProductionModel(
-        bale_5: bale_5,
-        bale_10: bale_10,
-        slice: slice,
-        bombolino: bombolino,
-      ),
-    );
-    notifyListeners();
-  }
+  // void contractList(name, quantity, date, price) {
+  //   contactList.add(
+  //     ContractModel(
+  //       name: name,
+  //       date: date,
+  //       quantity: quantity,
+  //       price: price,
+  //     ),
+  //   );
+  //   notifyListeners();
+  // }
+  //
+  // void dailyProductionList(bale_5, bale_10, slice, bombolino) {
+  //   productionList.add(
+  //     DailyProductionModel(
+  //       bale_5: bale_5,
+  //       bale_10: bale_10,
+  //       slice: slice,
+  //       bombolino: bombolino,
+  //     ),
+  //   );
+  //   notifyListeners();
+  // }
 
   List daysOfMonth = [
     {

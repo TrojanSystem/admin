@@ -1,10 +1,8 @@
-import 'package:ada_bread/dataHub/data_model/contract_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../database/contract_model_database.dart';
-
 class ProductionModelData extends ChangeNotifier {
-  ContractModelDatabase contractModelDB = ContractModelDatabase();
+  //ContractModelDatabase contractModelDB = ContractModelDatabase();
   int taskDone = 0;
   int totalTask = 0;
   int bale_5 = 0;
@@ -12,38 +10,51 @@ class ProductionModelData extends ChangeNotifier {
   int slice = 0;
   int bombolino = 0;
   bool _isLoading = true;
+  final List<Map<String, dynamic>> _contractList = [];
 
-  List<ContractModel> _contractList = [];
-
-  List<ContractModel> get contractList => _contractList;
+  List<Map<String, dynamic>> get contractList => _contractList;
 
   bool get isLoading => _isLoading;
-
-  Future loadContractList() async {
-    _isLoading = true;
+  void loadContratList() async {
     notifyListeners();
-    _contractList = await contractModelDB.getTasks();
-    _isLoading = false;
-    notifyListeners();
-  }
-
-  Future addContractList(ContractModel task) async {
-    await contractModelDB.insertTask(task);
-    await loadContractList();
+    await for (var x
+        in FirebaseFirestore.instance.collection('ContratGiven').snapshots()) {
+      for (var snap in x.docs) {
+        notifyListeners();
+        _contractList.add(snap.data());
+      }
+    }
     notifyListeners();
   }
 
-  Future updateContractList(ContractModel task) async {
-    await contractModelDB.updateTaskList(task);
-    await loadContractList();
-    notifyListeners();
-  }
-
-  Future deleteContractList(String task) async {
-    await contractModelDB.deleteTask(task);
-    await loadContractList();
-    notifyListeners();
-  }
+  //
+  // bool get isLoading => _isLoading;
+  //
+  // Future loadContractList() async {
+  //   _isLoading = true;
+  //   notifyListeners();
+  //   _contractList = await contractModelDB.getTasks();
+  //   _isLoading = false;
+  //   notifyListeners();
+  // }
+  //
+  // Future addContractList(ContractModel task) async {
+  //   await contractModelDB.insertTask(task);
+  //   await loadContractList();
+  //   notifyListeners();
+  // }
+  //
+  // Future updateContractList(ContractModel task) async {
+  //   await contractModelDB.updateTaskList(task);
+  //   await loadContractList();
+  //   notifyListeners();
+  // }
+  //
+  // Future deleteContractList(String task) async {
+  //   await contractModelDB.deleteTask(task);
+  //   await loadContractList();
+  //   notifyListeners();
+  // }
 
   String percent() {
     double x = 0;

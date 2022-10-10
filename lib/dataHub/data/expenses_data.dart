@@ -1,46 +1,43 @@
-import 'package:ada_bread/dataHub/data_model/expense_model.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../database/expense_database.dart';
-
 class ExpensesData extends ChangeNotifier {
-  DatabaseExpense db = DatabaseExpense();
+  // DatabaseExpense db = DatabaseExpense();
   double totalPrice = 0;
   double totalIncomePrice = 0;
 
   bool _isLoading = true;
 
-  List<ExpenseModel> _expenseList = [];
-
-  List<ExpenseModel> get expenseList => _expenseList;
+  // List<ExpenseModel> _expenseList = [];
+  //
+  // List<ExpenseModel> get expenseList => _expenseList;
 
   bool get isLoading => _isLoading;
 
-  Future loadExpenseList() async {
-    _isLoading = true;
-    notifyListeners();
-    _expenseList = await db.getTasks();
-    _isLoading = false;
-    notifyListeners();
-  }
-
-  Future addExpenseList(ExpenseModel task) async {
-    await db.insertTask(task);
-    await loadExpenseList();
-    notifyListeners();
-  }
-
-  Future updateExpenseList(ExpenseModel task) async {
-    await db.updateTaskList(task);
-    await loadExpenseList();
-    notifyListeners();
-  }
-
-  Future deleteExpenseList(int task) async {
-    await db.deleteTask(task);
-    await loadExpenseList();
-    notifyListeners();
-  }
+  // Future loadExpenseList() async {
+  //   _isLoading = true;
+  //   notifyListeners();
+  //   _expenseList = await db.getTasks();
+  //   _isLoading = false;
+  //   notifyListeners();
+  // }
+  //
+  // Future addExpenseList(ExpenseModel task) async {
+  //   await db.insertTask(task);
+  //   await loadExpenseList();
+  //   notifyListeners();
+  // }
+  //
+  // Future updateExpenseList(ExpenseModel task) async {
+  //   await db.updateTaskList(task);
+  //   await loadExpenseList();
+  //   notifyListeners();
+  // }
+  //
+  // Future deleteExpenseList(int task) async {
+  //   await db.deleteTask(task);
+  //   await loadExpenseList();
+  //   notifyListeners();
+  // }
 
   double addTotalPrice(price) {
     totalPrice += price;

@@ -1,19 +1,15 @@
-import 'package:ada_bread/dataHub/data_model/production_model.dart';
 import 'package:flutter/material.dart';
 
-import '../database/production_model_database.dart';
-
 class DailyProductionData extends ChangeNotifier {
-  ProductionModelDatabase dailyProductionDB = ProductionModelDatabase();
   String totalBale_5;
   String totalBale_10;
   String totalSlice;
   String totalBombolino;
   bool _isLoading = true;
 
-  List<ProductionModel> _productionList = [];
-
-  List<ProductionModel> get productionList => _productionList;
+  // List<ProductionModel> _productionList = [];
+  //
+  // List<ProductionModel> get productionList => _productionList;
 
   bool get isLoading => _isLoading;
 

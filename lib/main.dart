@@ -33,8 +33,10 @@ class _AdaBreadState extends State<AdaBread> {
           create: (BuildContext context) => DataStorage(),
         ),
         ChangeNotifierProvider(
-          create: (BuildContext context) =>
-              DataProvider()..loadProductionList(),
+          create: (BuildContext context) => DataProvider()
+            ..loadProductionList()
+            ..loadSoldList()
+            ..loadExpenseList(),
         ),
         ChangeNotifierProvider(
           create: (BuildContext context) => FileHandlerForExpense(),
@@ -43,14 +45,14 @@ class _AdaBreadState extends State<AdaBread> {
           create: (BuildContext context) => ExpensesData(),
         ),
         ChangeNotifierProvider(
-          create: (BuildContext context) => OrderDataHub()..loadOrderList(),
+          create: (BuildContext context) => OrderDataHub(),
         ),
         ChangeNotifierProvider(
           create: (BuildContext context) => DailyProductionData(),
         ),
         ChangeNotifierProvider(
           create: (BuildContext context) =>
-              ProductionModelData()..loadContractList(),
+              ProductionModelData()..loadContratList(),
         ),
       ],
       child: const MaterialApp(

@@ -1,9 +1,7 @@
-import 'package:ada_bread/dataHub/data_model/orderModel.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sms/flutter_sms.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-
-import '../dataHub/data/order_data_hub.dart';
 
 class DfoOrder extends StatefulWidget {
   const DfoOrder({Key key}) : super(key: key);
@@ -13,6 +11,10 @@ class DfoOrder extends StatefulWidget {
 }
 
 class _DfoOrderState extends State<DfoOrder> {
+  String _message, body;
+  String _canSendSMSMessage = 'Check is not run.';
+  List<String> people = ['0923675686', '0917920560'];
+  bool sendDirect = false;
   final formKey = GlobalKey<FormState>();
   String name = '';
   String phoneNumber = '';
@@ -36,14 +38,42 @@ class _DfoOrderState extends State<DfoOrder> {
         }));
   }
 
+  Future<void> _sendSMS(String _messageBody, List<String> number) async {
+    try {
+      String _result = await sendSMS(
+        message: _messageBody,
+        recipients: number,
+        sendDirect: sendDirect,
+      );
+      setState(() => _message = _result);
+    } catch (error) {
+      setState(() => _message = error.toString());
+    }
+  }
+
+  Future<bool> _canSendSMS() async {
+    bool _result = await canSendSMS();
+    setState(() => _canSendSMSMessage =
+        _result ? 'This unit can send SMS' : 'This unit cannot send SMS');
+    return _result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
         elevation: 0,
-        title: const Text('Dfo Order'),
+        backgroundColor: Colors.white,
+        toolbarHeight: 80,
         centerTitle: true,
+        title: const Text(
+          'Order',
+          style: TextStyle(
+            fontSize: 22,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: Form(
         key: formKey,
@@ -66,7 +96,7 @@ class _DfoOrderState extends State<DfoOrder> {
                   ),
                   TextFormField(
                     validator: (value) {
-                      if (value == null) {
+                      if (value.isEmpty) {
                         return 'Name can\'t be empty';
                       } else {
                         return null;
@@ -109,7 +139,7 @@ class _DfoOrderState extends State<DfoOrder> {
                   ),
                   TextFormField(
                     validator: (value) {
-                      if (value == null) {
+                      if (value.isEmpty) {
                         return 'Phone Number can\'t be empty';
                       } else {
                         return null;
@@ -200,7 +230,7 @@ class _DfoOrderState extends State<DfoOrder> {
                         ),
                         TextFormField(
                           validator: (value) {
-                            if (value == null) {
+                            if (value.isEmpty) {
                               return 'Can\'t be empty';
                             } else {
                               return null;
@@ -246,7 +276,7 @@ class _DfoOrderState extends State<DfoOrder> {
                         ),
                         TextFormField(
                           validator: (value) {
-                            if (value == null) {
+                            if (value.isEmpty) {
                               return 'Can\'t be empty';
                             } else {
                               return null;
@@ -279,6 +309,49 @@ class _DfoOrderState extends State<DfoOrder> {
               children: [
                 Expanded(
                   flex: 1,
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(25, 8, 25, 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Total Amount',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Can\'t be empty';
+                            } else {
+                              return null;
+                            }
+                          },
+                          onSaved: (value) {
+                            totalAmount = value;
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Total',
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 Expanded(
                   flex: 1,
@@ -299,7 +372,7 @@ class _DfoOrderState extends State<DfoOrder> {
                         ),
                         TextFormField(
                           validator: (value) {
-                            if (value == null) {
+                            if (value.isEmpty) {
                               return 'Can\'t be empty';
                             } else {
                               return null;
@@ -333,17 +406,22 @@ class _DfoOrderState extends State<DfoOrder> {
               onTap: () {
                 if (formKey.currentState.validate()) {
                   formKey.currentState.save();
-                  final addNewOrder = OrderModel(
-                    date: dateTime,
-                    name: name,
-                    orderedKilo: orderedKilo,
-                    phoneNumber: phoneNumber,
-                    pricePerKG: pricePerKG,
-                    remain: remain,
-                    totalAmount: totalAmount,
-                  );
-                  Provider.of<OrderDataHub>(context, listen: false)
-                      .addOrderList(addNewOrder);
+
+                  FirebaseFirestore.instance.collection('OrderData').add({
+                    'name': name,
+                    'remain': remain,
+                    'pricePerKG': pricePerKG,
+                    'totalAmount': totalAmount,
+                    'orderedKilo': orderedKilo,
+                    'phoneNumber': phoneNumber,
+                    'date': dateTime,
+                    'orderReceivedDate': DateTime.now().toString()
+                  });
+                  _sendSMS(
+                      '${orderedKilo}kg ለ ${DateFormat.E().format(
+                        DateTime.parse(dateTime),
+                      )}',
+                      people);
                   Navigator.of(context).pop();
                 }
               },

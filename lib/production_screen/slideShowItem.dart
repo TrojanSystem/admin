@@ -4,8 +4,11 @@ class SlideShowItem extends StatelessWidget {
   final String bale_5;
   final String image;
   final String value;
+  final double totIncome;
+  final String totSold;
 
-  SlideShowItem({this.bale_5, this.value, this.image});
+  SlideShowItem(
+      {this.bale_5, this.value, this.image, this.totSold, this.totIncome});
   String Sentence = 'Here';
   bool isExpanded = true;
   bool isExpanded2 = true;
@@ -108,26 +111,26 @@ class SlideShowItem extends StatelessWidget {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text(
+              children: [
+                const Text(
                   'Sold',
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900),
                 ),
                 Text(
-                  '4',
+                  totSold.toString(),
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900),
                 ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text(
+              children: [
+                const Text(
                   'Tot Income',
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900),
                 ),
                 Text(
-                  '3600',
+                  totIncome.toStringAsFixed(2),
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900),
                 ),
               ],

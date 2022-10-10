@@ -1,44 +1,51 @@
-import 'package:ada_bread/dataHub/data_model/orderModel.dart';
 import 'package:flutter/material.dart';
 
-import '../database/orderModelDatabase.dart';
-
 class OrderDataHub extends ChangeNotifier {
-  OrderModelDatabase orderedModelDB = OrderModelDatabase();
+  //OrderModelDatabase orderedModelDB = OrderModelDatabase();
 
   bool _isLoading = true;
-
-  List<OrderModel> _orderList = [];
-
-  List<OrderModel> get orderList => _orderList;
-
-  bool get isLoading => _isLoading;
-
-  Future loadOrderList() async {
-    _isLoading = true;
-    notifyListeners();
-    _orderList = await orderedModelDB.getTasks();
-    _isLoading = false;
-    notifyListeners();
-  }
-
-  Future addOrderList(OrderModel task) async {
-    await orderedModelDB.insertTask(task);
-    await loadOrderList();
-    notifyListeners();
-  }
-
-  Future updateOrderList(OrderModel task) async {
-    await orderedModelDB.updateTaskList(task);
-    await loadOrderList();
-    notifyListeners();
-  }
-
-  Future deleteOrderList(int task) async {
-    await orderedModelDB.deleteTask(task);
-    await loadOrderList();
-    notifyListeners();
-  }
+  //
+  // final List<Map<String, dynamic>> _orderList = [];
+  //
+  // List<Map<String, dynamic>> get orderList => _orderList;
+  //
+  // bool get isLoading => _isLoading;
+  // void loadOrderList() async {
+  //   notifyListeners();
+  //   await for (var x
+  //       in FirebaseFirestore.instance.collection('OrderData').snapshots()) {
+  //     for (var snap in x.docs) {
+  //       notifyListeners();
+  //       _orderList.add(snap.data());
+  //     }
+  //   }
+  //   notifyListeners();
+  // }
+  // Future loadOrderList() async {
+  //   _isLoading = true;
+  //   notifyListeners();
+  //   _orderList = await orderedModelDB.getTasks();
+  //   _isLoading = false;
+  //   notifyListeners();
+  // }
+  //
+  // Future addOrderList(OrderModel task) async {
+  //   await orderedModelDB.insertTask(task);
+  //   await loadOrderList();
+  //   notifyListeners();
+  // }
+  //
+  // Future updateOrderList(OrderModel task) async {
+  //   await orderedModelDB.updateTaskList(task);
+  //   await loadOrderList();
+  //   notifyListeners();
+  // }
+  //
+  // Future deleteOrderList(int task) async {
+  //   await orderedModelDB.deleteTask(task);
+  //   await loadOrderList();
+  //   notifyListeners();
+  // }
 
   List daysOfMonth = [
     {
