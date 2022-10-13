@@ -13,7 +13,18 @@ class ProductionModelData extends ChangeNotifier {
   final List<Map<String, dynamic>> _contractList = [];
 
   List<Map<String, dynamic>> get contractList => _contractList;
+  final List<Map<String, dynamic>> _orderTaken = [];
 
+  List<Map<String, dynamic>> get orderTaken => _orderTaken;
+  final List<Map<String, dynamic>> _dailyProduction = [];
+
+  List<Map<String, dynamic>> get dailyProduction => _dailyProduction;
+  final List<Map<String, dynamic>> _expense = [];
+
+  List<Map<String, dynamic>> get expense => _expense;
+  final List<Map<String, dynamic>> _shopSellData = [];
+
+  List<Map<String, dynamic>> get shopSellData => _shopSellData;
   bool get isLoading => _isLoading;
   void loadContratList() async {
     notifyListeners();
@@ -27,6 +38,54 @@ class ProductionModelData extends ChangeNotifier {
     notifyListeners();
   }
 
+  void loadDailyShopDataList() async {
+    notifyListeners();
+    await for (var x
+        in FirebaseFirestore.instance.collection('DailyShopSell').snapshots()) {
+      for (var snap in x.docs) {
+        notifyListeners();
+        _shopSellData.add(snap.data());
+      }
+    }
+    notifyListeners();
+  }
+
+  void loadOrderList() async {
+    notifyListeners();
+    await for (var x
+        in FirebaseFirestore.instance.collection('OrderData').snapshots()) {
+      for (var snap in x.docs) {
+        notifyListeners();
+        _orderTaken.add(snap.data());
+      }
+    }
+    notifyListeners();
+  }
+
+  void loadDailyProductionList() async {
+    notifyListeners();
+    await for (var x
+        in FirebaseFirestore.instance.collection('DailySell').snapshots()) {
+      for (var snap in x.docs) {
+        notifyListeners();
+        _dailyProduction.add(snap.data());
+      }
+    }
+    notifyListeners();
+  }
+
+  void loadExpenseList() async {
+    notifyListeners();
+    await for (var x in FirebaseFirestore.instance
+        .collection('EmployeeExpenses')
+        .snapshots()) {
+      for (var snap in x.docs) {
+        notifyListeners();
+        _expense.add(snap.data());
+      }
+    }
+    notifyListeners();
+  }
   //
   // bool get isLoading => _isLoading;
   //

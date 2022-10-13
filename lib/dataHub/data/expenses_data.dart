@@ -1,43 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 class ExpensesData extends ChangeNotifier {
-  // DatabaseExpense db = DatabaseExpense();
+  final List<Map<String, dynamic>> expenseList = [];
   double totalPrice = 0;
   double totalIncomePrice = 0;
 
-  bool _isLoading = true;
-
-  // List<ExpenseModel> _expenseList = [];
-  //
-  // List<ExpenseModel> get expenseList => _expenseList;
-
-  bool get isLoading => _isLoading;
-
-  // Future loadExpenseList() async {
-  //   _isLoading = true;
-  //   notifyListeners();
-  //   _expenseList = await db.getTasks();
-  //   _isLoading = false;
-  //   notifyListeners();
-  // }
-  //
-  // Future addExpenseList(ExpenseModel task) async {
-  //   await db.insertTask(task);
-  //   await loadExpenseList();
-  //   notifyListeners();
-  // }
-  //
-  // Future updateExpenseList(ExpenseModel task) async {
-  //   await db.updateTaskList(task);
-  //   await loadExpenseList();
-  //   notifyListeners();
-  // }
-  //
-  // Future deleteExpenseList(int task) async {
-  //   await db.deleteTask(task);
-  //   await loadExpenseList();
-  //   notifyListeners();
-  // }
+  void loadExpenseList() async {
+    notifyListeners();
+    await for (var y in FirebaseFirestore.instance
+        .collection('EmployeeExpenses')
+        .snapshots()) {
+      for (var snapSell in y.docs) {
+        notifyListeners();
+        expenseList.add(snapSell.data());
+      }
+    }
+    notifyListeners();
+  }
 
   double addTotalPrice(price) {
     totalPrice += price;

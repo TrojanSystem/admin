@@ -354,7 +354,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                                     Padding(
                                                       padding: const EdgeInsets
                                                               .fromLTRB(
-                                                          0, 8.0, 10, 20),
+                                                          0, 8.0, 0, 20),
                                                       child: Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
@@ -364,9 +364,6 @@ class _OrderScreenState extends State<OrderScreen> {
                                                             Icons
                                                                 .access_time_filled_rounded,
                                                             size: 20,
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 10,
                                                           ),
                                                           Text(
                                                             DateFormat.E()
@@ -435,7 +432,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(10),
                                           ),
-                                          width: 130,
+                                          width: 120,
                                           height: 33,
                                           child: Row(
                                             mainAxisAlignment:

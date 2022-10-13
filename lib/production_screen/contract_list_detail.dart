@@ -36,7 +36,20 @@ class _ContractListDetailState extends State<ContractListDetail> {
         .where((element) =>
             DateTime.parse(element['date']).month == selectedMonthForList)
         .toList();
+    var totalContratGivenPrice =
+        todayFilteredContratList.map((e) => e['price']).toList();
+    var totalContratGivenQuantity =
+        todayFilteredContratList.map((e) => e['quantity']).toList();
 
+    var totContratGivenSum = 0.00;
+    for (int xx = 0; xx < totalContratGivenPrice.length; xx++) {
+      totContratGivenSum += (double.parse(totalContratGivenPrice[xx]) *
+          double.parse(totalContratGivenQuantity[xx]));
+    }
+    var totContratGivenQuantity = 0.00;
+    for (int xx = 0; xx < totalContratGivenPrice.length; xx++) {
+      totContratGivenQuantity += double.parse(totalContratGivenQuantity[xx]);
+    }
     var filterName =
         todayFilteredContratList.map((e) => e['name']).toSet().toList();
 
@@ -84,8 +97,8 @@ class _ContractListDetailState extends State<ContractListDetail> {
               flex: 1,
               child: Row(
                 children: [
-                  Income(totPrice: widget.totPrice),
-                  Expense(total: widget.total),
+                  Income(totPrice: totContratGivenSum),
+                  Expense(total: totContratGivenQuantity),
                 ],
               ),
             ),

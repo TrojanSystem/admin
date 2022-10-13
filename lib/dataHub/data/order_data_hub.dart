@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class OrderDataHub extends ChangeNotifier {
@@ -5,22 +6,22 @@ class OrderDataHub extends ChangeNotifier {
 
   bool _isLoading = true;
   //
-  // final List<Map<String, dynamic>> _orderList = [];
-  //
-  // List<Map<String, dynamic>> get orderList => _orderList;
-  //
-  // bool get isLoading => _isLoading;
-  // void loadOrderList() async {
-  //   notifyListeners();
-  //   await for (var x
-  //       in FirebaseFirestore.instance.collection('OrderData').snapshots()) {
-  //     for (var snap in x.docs) {
-  //       notifyListeners();
-  //       _orderList.add(snap.data());
-  //     }
-  //   }
-  //   notifyListeners();
-  // }
+  final List<Map<String, dynamic>> _orderList = [];
+
+  List<Map<String, dynamic>> get orderList => _orderList;
+
+  bool get isLoading => _isLoading;
+  void loadOrderList() async {
+    notifyListeners();
+    await for (var x
+        in FirebaseFirestore.instance.collection('OrderData').snapshots()) {
+      for (var snap in x.docs) {
+        notifyListeners();
+        _orderList.add(snap.data());
+      }
+    }
+    notifyListeners();
+  }
   // Future loadOrderList() async {
   //   _isLoading = true;
   //   notifyListeners();

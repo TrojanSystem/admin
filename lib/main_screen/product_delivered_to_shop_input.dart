@@ -456,7 +456,7 @@ class _ProductDeliveredToShopInputState
                           borderRadius: BorderRadius.circular(10),
                           color: Colors.grey[200],
                         ),
-                        width: 250,
+                        width: 240,
                         height: 60,
                         child: Text(
                           'Date is set to : ${DateFormat.yMEd().format(DateTime.parse(dateTime))}',

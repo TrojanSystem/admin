@@ -9,6 +9,7 @@ import '../drop_down_menu_button.dart';
 import 'add_expense.dart';
 import 'daily_expense_item.dart';
 import 'daily_expense_pdf_report.dart';
+import 'month_progress_expense_item.dart';
 
 class ExpenseScreen extends StatefulWidget {
   ExpenseScreen({Key key}) : super(key: key);
@@ -159,11 +160,11 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
             });
           },
           button_3: () {
-            // Navigator.of(context).push(
-            //   MaterialPageRoute(
-            //     builder: (_) => MonthProgressExpenseItem(),
-            //   ),
-            // );
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const MonthProgressExpenseItem(),
+              ),
+            );
           },
           button_4: () {},
         ),

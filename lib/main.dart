@@ -1,10 +1,10 @@
+import 'package:ada_bread/crediential/login_screen.dart';
 import 'package:ada_bread/dataHub/data/expenses_data.dart';
 import 'package:ada_bread/data_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'crediential/login_screen.dart';
 import 'dataHub/data/daily_production_data.dart';
 import 'dataHub/data/data_storage.dart';
 import 'dataHub/data/order_data_hub.dart';
@@ -42,10 +42,10 @@ class _AdaBreadState extends State<AdaBread> {
           create: (BuildContext context) => FileHandlerForExpense(),
         ),
         ChangeNotifierProvider(
-          create: (BuildContext context) => ExpensesData(),
+          create: (BuildContext context) => ExpensesData()..loadExpenseList(),
         ),
         ChangeNotifierProvider(
-          create: (BuildContext context) => OrderDataHub(),
+          create: (BuildContext context) => OrderDataHub()..loadOrderList(),
         ),
         ChangeNotifierProvider(
           create: (BuildContext context) => DailyProductionData(),
@@ -55,7 +55,7 @@ class _AdaBreadState extends State<AdaBread> {
               ProductionModelData()..loadContratList(),
         ),
       ],
-      child: const MaterialApp(
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: LoginDemo(),
       ),

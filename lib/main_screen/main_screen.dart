@@ -1,5 +1,6 @@
 import 'package:ada_bread/dataHub/data/daily_production_data.dart';
 import 'package:ada_bread/data_provider.dart';
+import 'package:ada_bread/drawer/custom_drawer.dart';
 import 'package:ada_bread/main_screen/product_delivered_to_shop_input.dart';
 import 'package:ada_bread/main_screen/seller_detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,6 +13,7 @@ import 'package:provider/provider.dart';
 import '../constants.dart';
 import '../dataHub/data/data_storage.dart';
 import '../drop_down_menu_button.dart';
+import '../profit_analysis/profit_analysis_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -35,8 +37,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final shopSold = Provider.of<DataProvider>(context).production;
-
     double _w = MediaQuery.of(context).size.width;
 
     final daySelected = Provider.of<DataStorage>(context).daysOfMonth;
@@ -66,7 +66,7 @@ class _MainScreenState extends State<MainScreen> {
               );
             }
             final productionData = snap.data.docs;
-
+            final shopSold = Provider.of<DataProvider>(context).production;
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -855,7 +855,7 @@ class _MainScreenState extends State<MainScreen> {
                                                           seconds: 1),
                                                       curve: Curves
                                                           .fastLinearToSlowEaseIn,
-                                                      height: 380,
+                                                      height: 390,
                                                       width: 350,
                                                       child: Column(
                                                         children: [
@@ -881,7 +881,7 @@ class _MainScreenState extends State<MainScreen> {
                                                                 ),
                                                               ),
                                                               const SizedBox(
-                                                                width: 20,
+                                                                width: 10,
                                                               ),
                                                               Text(
                                                                   'Tot Income: $totalSold',
@@ -930,7 +930,7 @@ class _MainScreenState extends State<MainScreen> {
                                                                               curve: Curves.fastLinearToSlowEaseIn,
                                                                               child: FadeInAnimation(
                                                                                 child: Container(
-                                                                                  margin: EdgeInsets.only(bottom: _w / 30, left: _w / 60, right: _w / 60),
+                                                                                  margin: EdgeInsets.only(bottom: _w / 100, left: _w / 60, right: _w / 60),
                                                                                   decoration: const BoxDecoration(
                                                                                     color: Colors.white,
                                                                                     borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -939,7 +939,7 @@ class _MainScreenState extends State<MainScreen> {
                                                                                     children: [
                                                                                       Image.asset(
                                                                                         e['image'],
-                                                                                        width: 50,
+                                                                                        width: 40,
                                                                                       ),
                                                                                       Padding(
                                                                                         padding: const EdgeInsets.all(8.0),
@@ -1014,11 +1014,12 @@ class _MainScreenState extends State<MainScreen> {
               );
             },
             button_4: () {
-              // Navigator.of(context).push(
-              //   MaterialPageRoute(builder: (ctx) => ProfitAnalaysisScreen()),
-              // );
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (ctx) => ProfitAnalaysisScreen()),
+              );
             }),
       ),
+      drawer: CustomDrawer(),
     );
   }
 }

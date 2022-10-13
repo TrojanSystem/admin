@@ -9,9 +9,11 @@ class ProfitAnalaysis extends StatefulWidget {
   final List yearlyExpense;
   final List yearlyContrat;
   final List yearlyOrder;
+  final List yearlySold;
 
   ProfitAnalaysis(
       {this.index,
+      this.yearlySold,
       this.currentYear,
       this.yearlyContrat,
       this.yearlyExpense,
@@ -47,151 +49,188 @@ class _ProfitAnalaysisState extends State<ProfitAnalaysis> {
     var monthlyExpense = widget.yearlyExpense
         .where((element) =>
             DateFormat.MMM()
-                .format(DateTime.parse(element.itemDate))
+                .format(DateTime.parse(element['itemDate']))
                 .toString() ==
             monthOfYear[widget.index])
         .toList();
-    var totalMonthlyExpenses = monthlyExpense.map((e) => e.itemPrice).toList();
-
+    var totalMonthlyExpenses =
+        monthlyExpense.map((e) => e['itemPrice']).toList();
+    var totalMonthlyExpensesQuantity =
+        monthlyExpense.map((e) => e['itemQuantity']).toList();
     var totMonthlyExpenseSum = 0.0;
     for (int xx = 0; xx < totalMonthlyExpenses.length; xx++) {
-      totMonthlyExpenseSum += double.parse(totalMonthlyExpenses[xx]);
+      totMonthlyExpenseSum += (double.parse(totalMonthlyExpenses[xx]) *
+          double.parse(totalMonthlyExpensesQuantity[xx]));
     }
-
     /*
-    *
-    *
-    *
-    *
-    *
-    *
-    *
-    * */
-    var monthlyContract = widget.yearlyContrat
+   *
+   *
+   * CONTRAT MONTHLY SUM
+   *
+   *
+   *
+   *
+   * */
+    var monthlyContratIncome = widget.yearlyContrat
         .where((element) =>
-            DateFormat.MMM().format(DateTime.parse(element.date)).toString() ==
+            DateFormat.MMM()
+                .format(DateTime.parse(element['date']))
+                .toString() ==
             monthOfYear[widget.index])
         .toList();
-    double totPriceDabo = 0;
-    var quantityOfBread = monthlyContract.map((e) => e.quantity).toList();
-    double sumDabo = 0;
-    var totDaboDelivered = monthlyContract.map((e) => e.quantity).toList();
-
-    for (int x = 0; x < totDaboDelivered.length; x++) {
-      sumDabo += int.parse(totDaboDelivered[x]);
+    var totalMonthlyContratPrice =
+        monthlyContratIncome.map((e) => e['price']).toList();
+    var totalMonthlyContratQuantity =
+        monthlyContratIncome.map((e) => e['quantity']).toList();
+    var totMonthlyContratSum = 0.0;
+    for (int xx = 0; xx < totalMonthlyContratPrice.length; xx++) {
+      totMonthlyContratSum += (double.parse(totalMonthlyContratPrice[xx]) *
+          double.parse(totalMonthlyContratQuantity[xx]));
     }
-    var priceOfBread = monthlyContract.map((e) => e.price).toList();
-    for (int x = 0; x < quantityOfBread.length; x++) {
-      totPriceDabo +=
-          double.parse(quantityOfBread[x]) * double.parse(priceOfBread[x]);
-    }
-
     /*
     *
-    *
-    *
-    *
-    *
-    *
+    * ORDER MONTHLY SUM
     *
     * */
 
-    var monthlyOrder = widget.yearlyOrder
+    var monthlyOrderIncome = widget.yearlyOrder
         .where((element) =>
-            DateFormat.MMM().format(DateTime.parse(element.date)).toString() ==
+            DateFormat.MMM()
+                .format(DateTime.parse(element['date']))
+                .toString() ==
             monthOfYear[widget.index])
         .toList();
-    double totOrderedKg = 0;
-    double totPriceOrder = 0;
-    var quantityOfDfo = monthlyOrder.map((e) => e.orderedKilo).toList();
+    var totalMonthlyOrderPrice =
+        monthlyOrderIncome.map((e) => e['totalAmount']).toList();
 
-    var priceOfDfo = monthlyOrder.map((e) => e.totalAmount).toList();
-    for (int x = 0; x < priceOfDfo.length; x++) {
-      totPriceOrder += double.parse(priceOfDfo[x]);
-    }
-    for (int x = 0; x < quantityOfDfo.length; x++) {
-      totOrderedKg += double.parse(quantityOfDfo[x]);
+    var totMonthlyOrderSum = 0.0;
+    for (int xx = 0; xx < totalMonthlyOrderPrice.length; xx++) {
+      totMonthlyOrderSum += (double.parse(totalMonthlyOrderPrice[xx]));
     }
 
     /*
-    *
-    *
-    *
-    *
-    *
-    *
-    *
-    * */
+   *
+   *
+   * MONTHLY SHOP SOLD SUM
+   *
+   *
+   *
+   * */
 
-    final summaryDataSold = 23000;
-    double totalSummary(double totExpenseSum, double totIncomeSum, tot) {
-      double totalSummary = totExpenseSum + totIncomeSum + tot;
-      return totalSummary;
+    var monthlyShopSoldIncome = widget.yearlySold
+        .where((element) =>
+            DateFormat.MMM()
+                .format(DateTime.parse(element['date']))
+                .toString() ==
+            monthOfYear[widget.index])
+        .toList();
+
+    /*
+
+
+                  BALE 5
+                *
+                *
+                *
+                * */
+    var totalEmployeeSoldBale_5 =
+        monthlyShopSoldIncome.map((e) => e['bale_5']).toList();
+
+    var totalEmployeeSoldSumBale_5 = 0;
+    for (int xx = 0; xx < totalEmployeeSoldBale_5.length; xx++) {
+      totalEmployeeSoldSumBale_5 += int.parse(totalEmployeeSoldBale_5[xx]);
     }
 
-    // final filtereByYearForExpense = summaryExpenseDataList
-    //     .where((element) =>
-    //         DateTime.parse(element.itemDate).year == widget.currentYear)
-    //     .toList();
-    // final filtereByYearForSell = summarySellingDataList
-    //     .where((element) =>
-    //         DateTime.parse(element.itemDate).year == widget.currentYear)
-    //     .toList();
-    //
-    // var monthExpense = filtereByYearForExpense
-    //     .where((element) =>
-    //         DateFormat.MMM()
-    //             .format(DateTime.parse(element.itemDate))
-    //             .toString() ==
-    //         monthOfYear[widget.index])
-    //     .toList();
-    // var monthExpenseSummary = monthExpense.map((e) => e.itemPrice).toList();
-    // var sumExpense = 0.0;
-    // for (int x = 0; x < monthExpenseSummary.length; x++) {
-    //   sumExpense += double.parse(monthExpenseSummary[x]);
-    // }
-    //
-    // var monthIncome = filtereByYearForSell
-    //     .where((element) =>
-    //         DateFormat.MMM()
-    //             .format(DateTime.parse(element.itemDate))
-    //             .toString() ==
-    //         monthOfYear[widget.index])
-    //     .toList();
-    //
-    // var monthIncomeSummaryQuantity =
-    //     monthIncome.map((e) => e.itemQuantity).toList();
-    // var monthIncomeSummary = monthIncome.map((e) => e.itemPrice).toList();
-    // var sumIncomes = 0.0;
-    // for (int x = 0; x < monthIncomeSummary.length; x++) {
-    //   sumIncomes += (double.parse(monthIncomeSummary[x]) *
-    //       double.parse(monthIncomeSummaryQuantity[x]));
-    // }
-    //
-    // final dataForProfit =
-    //     Provider.of<ProfitModelData>(context, listen: false).profitList;
-    // final dataForMonth = dataForProfit
-    //     .where((element) =>
-    //         DateTime.parse(element.itemDate).year == widget.currentYear)
-    //     .toList();
-    //
-    // var data = dataForMonth
-    //     .where((element) =>
-    //         DateFormat.MMM()
-    //             .format(DateTime.parse(element.itemDate))
-    //             .toString() ==
-    //         monthOfYear[widget.index])
-    //     .toList();
-    // final profitStorePrice = data.map((e) => e.storePrice).toList();
-    // final profitSoldQuantity = data.map((e) => e.sellQuantity).toList();
-    // var profitSum = 0.0;
-    // for (int finals = 0; finals < data.length; finals++) {
-    //   profitSum += (double.parse(profitStorePrice[finals]) *
-    //       double.parse(profitSoldQuantity[finals]));
-    // }
-    double sumIncome = 0.00;
+    /*
 
-    sumIncome = totalSummary(totPriceOrder, totPriceDabo, summaryDataSold);
+
+                  BALE 10
+                *
+                *
+                *
+                * */
+    var totalEmployeeSoldBale_10 =
+        monthlyShopSoldIncome.map((e) => e['bale_10']).toList();
+
+    var totalEmployeeSoldSumBale_10 = 0;
+    for (int xx = 0; xx < totalEmployeeSoldBale_10.length; xx++) {
+      totalEmployeeSoldSumBale_10 += int.parse(totalEmployeeSoldBale_10[xx]);
+    }
+    /*
+
+
+                   SLICE
+                *
+                *
+                *
+                * */
+    var totalEmployeeSoldSlice =
+        monthlyShopSoldIncome.map((e) => e['slice']).toList();
+
+    var totalEmployeeSoldSumSlice = 0;
+    for (int xx = 0; xx < totalEmployeeSoldSlice.length; xx++) {
+      totalEmployeeSoldSumSlice += int.parse(totalEmployeeSoldSlice[xx]);
+    }
+    /*
+
+
+                 BOMBOLINO
+                *
+                *
+                *
+                * */
+    var totalEmployeeSoldBombolino =
+        monthlyShopSoldIncome.map((e) => e['bombolino']).toList();
+
+    var totalEmployeeSoldSumBombolino = 0;
+    for (int xx = 0; xx < totalEmployeeSoldBombolino.length; xx++) {
+      totalEmployeeSoldSumBombolino +=
+          int.parse(totalEmployeeSoldBombolino[xx]);
+    }
+    /*
+                *
+                * TOTAL INCOME BALE_5
+                *
+                *
+                * */
+    final double totalBale_5 = totalEmployeeSoldSumBale_5 *
+        (monthlyShopSoldIncome.isEmpty
+            ? 0.0
+            : double.parse(monthlyShopSoldIncome.last['bale_5_Sp']));
+    /*
+                *
+                * TOTAL INCOME BALE_10
+                *
+                *
+                * */
+    final double totalBale_10 = totalEmployeeSoldSumBale_10 *
+        (monthlyShopSoldIncome.isEmpty
+            ? 0.0
+            : double.parse(monthlyShopSoldIncome.last['bale_10_Sp']));
+    /*
+                *
+                * TOTAL INCOME SLICE
+                *
+                *
+                * */
+    final double totalSlice = totalEmployeeSoldSumSlice *
+        (monthlyShopSoldIncome.isEmpty
+            ? 0.0
+            : double.parse(monthlyShopSoldIncome.last['slice_Sp']));
+    /*
+                *
+                * TOTAL INCOME BOMBOLINO
+                *
+                *
+                * */
+    final double totalBombolino = totalEmployeeSoldSumBombolino *
+        (monthlyShopSoldIncome.isEmpty
+            ? 0.0
+            : double.parse(monthlyShopSoldIncome.last['bombolino_Sp']));
+    double totalMonthlySold =
+        (totalBale_5 + totalBale_10 + totalSlice + totalBombolino);
+    double summaryMonthlyIncome =
+        totalMonthlySold + totMonthlyOrderSum + totMonthlyContratSum;
 
     double totalSummaryDetail(double sumIncome, double sumExpense) {
       totalSumation = sumIncome - sumExpense;
@@ -285,7 +324,7 @@ class _ProfitAnalaysisState extends State<ProfitAnalaysis> {
                                         style: kkSummaryIncome,
                                       ),
                                       Text(
-                                        '${totalSummary(totPriceOrder, totPriceDabo, summaryDataSold)}',
+                                        '$summaryMonthlyIncome',
                                         style: kkSummaryIncome,
                                       ),
                                     ],
@@ -326,7 +365,7 @@ class _ProfitAnalaysisState extends State<ProfitAnalaysis> {
                                         ),
                                       ),
                                       Text(
-                                        '${totalSummaryDetail(sumIncome, totMonthlyExpenseSum)}',
+                                        '${totalSummaryDetail(summaryMonthlyIncome, totMonthlyExpenseSum)}',
                                         style: TextStyle(
                                           color: isNegative
                                               ? Colors.red
@@ -364,7 +403,7 @@ class _ProfitAnalaysisState extends State<ProfitAnalaysis> {
                                     top: 25, bottom: 20, left: 5),
                                 child: Center(
                                   child: Text(
-                                    'monthOfYear',
+                                    '${monthOfYear[widget.index]}',
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w900,
