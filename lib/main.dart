@@ -1,6 +1,6 @@
-import 'package:ada_bread/crediential/login_screen.dart';
 import 'package:ada_bread/dataHub/data/expenses_data.dart';
 import 'package:ada_bread/data_provider.dart';
+import 'package:ada_bread/main_screen/homepage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -57,7 +57,7 @@ class _AdaBreadState extends State<AdaBread> {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: LoginDemo(),
+        home: HomePage(),
       ),
     );
   }

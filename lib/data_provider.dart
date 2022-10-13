@@ -5,7 +5,8 @@ class DataProvider extends ChangeNotifier {
   final List<Map<String, dynamic>> production = [];
   final List<Map<String, dynamic>> expenseList = [];
   final List<Map<String, dynamic>> databaseDataForShop = [];
-
+  double totalPrice = 0;
+  double totalIncomePrice = 0;
   String loggedUserEmail = '';
   String totalSoldIncome = '';
   String totalExpectedIncome = '';
@@ -64,6 +65,22 @@ class DataProvider extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  double addTotalPrice(price) {
+    totalPrice += price;
+    return totalPrice;
+  }
+
+  double minusTotalPrice(double price) {
+    totalPrice = totalPrice - price;
+    return totalPrice;
+  }
+
+  double updateTotalPrice(double price, double updatePrice) {
+    totalPrice -= price;
+    totalPrice += updatePrice;
+    return totalPrice;
   }
 
   List daysOfMonth = [

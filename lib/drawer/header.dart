@@ -23,7 +23,7 @@ class CustomDrawerHeader extends StatelessWidget {
             const Expanded(
               flex: 3,
               child: Text(
-                'SoS Project',
+                'ADA BREAD',
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,

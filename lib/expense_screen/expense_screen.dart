@@ -25,8 +25,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dailyExpense =
-        Provider.of<DataProvider>(context, listen: false).daysOfMonth;
+    final day = Provider.of<DataProvider>(context, listen: false).daysOfMonth;
     return Scaffold(
       //backgroundColor: const Color.fromRGBO(3, 83, 151, 1),
       appBar: AppBar(
@@ -37,97 +36,114 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
         ),
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Container(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: DropdownButton(
-                        dropdownColor: Colors.grey[850],
-                        iconEnabledColor: Colors.white,
-                        menuMaxHeight: 300,
-                        value: selectedDayOfMonth,
-                        items: dailyExpense
-                            .map(
-                              (e) => DropdownMenuItem(
-                                child: Text(
-                                  e['mon'],
-                                  style: kkDropDown,
-                                ),
-                                value: e['day'],
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedDayOfMonth = value;
-                          });
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
-                            'Daily Expense: ',
-                            style: dailyIncomeStyle,
+      body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('EmployeeExpenses')
+              .snapshots(),
+          builder: (context, expenseData) {
+            if (!expenseData.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.blue,
+                  strokeWidth: 3,
+                ),
+              );
+            }
+            final expense = expenseData.data.docs;
+
+            final result = expense
+                .where((element) =>
+                    DateTime.parse(element['itemDate']).year ==
+                    DateTime.now().year)
+                .toList();
+
+            var todayMonthFilteredList = result
+                .where((element) =>
+                    DateTime.parse(element['itemDate']).month ==
+                    DateTime.now().month)
+                .toList();
+            var dailyExpense = todayMonthFilteredList
+                .where((element) =>
+                    DateTime.parse(element['itemDate']).day ==
+                    selectedDayOfMonth)
+                .toList();
+            var totalExpenses = result.map((e) => e['itemPrice']).toList();
+            var totalExpensesQuantity =
+                result.map((e) => e['itemQuantity']).toList();
+            var totExpenseSum = 0.0;
+            for (int xx = 0; xx < totalExpenses.length; xx++) {
+              totExpenseSum += (double.parse(totalExpenses[xx]) *
+                  double.parse(totalExpensesQuantity[xx]));
+            }
+            var totalMonthlyExpenses =
+                dailyExpense.map((e) => e['itemPrice']).toList();
+            var totalMonthlyExpensesQuantity =
+                dailyExpense.map((e) => e['itemQuantity']).toList();
+            var totMonthlyExpenseSum = 0.0;
+            for (int xx = 0; xx < totalMonthlyExpenses.length; xx++) {
+              totMonthlyExpenseSum += (double.parse(totalMonthlyExpenses[xx]) *
+                  double.parse(totalMonthlyExpensesQuantity[xx]));
+            }
+            return Column(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: DropdownButton(
+                              dropdownColor: Colors.grey[850],
+                              iconEnabledColor: Colors.white,
+                              menuMaxHeight: 300,
+                              value: selectedDayOfMonth,
+                              items: day
+                                  .map(
+                                    (e) => DropdownMenuItem(
+                                      child: Text(
+                                        e['mon'],
+                                        style: kkDropDown,
+                                      ),
+                                      value: e['day'],
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedDayOfMonth = value;
+                                });
+                              },
+                            ),
                           ),
-                          Text(
-                            'Total: ',
-                            style: dailyIncomeStyle,
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Daily Expense: $totMonthlyExpenseSum ',
+                                  style: dailyIncomeStyle,
+                                ),
+                                Text(
+                                  'Total Expense: $totExpenseSum',
+                                  style: dailyIncomeStyle,
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ],
+                    color: const Color.fromRGBO(3, 83, 151, 1),
+                  ),
                 ),
-              ),
-              color: const Color.fromRGBO(3, 83, 151, 1),
-            ),
-          ),
-          Expanded(
-            flex: 12,
-            child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('EmployeeExpenses')
-                    .snapshots(),
-                builder: (context, expenseData) {
-                  if (!expenseData.hasData) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.blue,
-                        strokeWidth: 3,
-                      ),
-                    );
-                  }
-                  final expense = expenseData.data.docs;
-
-                  final result = expense
-                      .where((element) =>
-                          DateTime.parse(element['itemDate']).year ==
-                          DateTime.now().year)
-                      .toList();
-
-                  var todayMonthFilteredList = result
-                      .where((element) =>
-                          DateTime.parse(element['itemDate']).month ==
-                          DateTime.now().month)
-                      .toList();
-                  var dailyExpense = todayMonthFilteredList
-                      .where((element) =>
-                          DateTime.parse(element['itemDate']).day ==
-                          selectedDayOfMonth)
-                      .toList();
-                  return dailyExpense.isEmpty
+                Expanded(
+                  flex: 12,
+                  child: dailyExpense.isEmpty
                       ? Image.asset(
                           'images/empty.png',
                           width: 300,
@@ -138,11 +154,11 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                                 color: Colors.red,
                               ),
                             )
-                          : ExpenseItem(dailyExpense: dailyExpense);
-                }),
-          ),
-        ],
-      ),
+                          : ExpenseItem(dailyExpense: dailyExpense),
+                ),
+              ],
+            );
+          }),
       floatingActionButton: Builder(
         builder: (context) => DropDownMenuButton(
           primaryColor: Colors.red[800],

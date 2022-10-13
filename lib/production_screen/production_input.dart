@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 class ProductionInput extends StatefulWidget {
@@ -489,7 +490,14 @@ class _ProductionInputState extends State<ProductionInput> {
                       'bombolino': bombolino,
                       'producedDate': dateTime
                     });
-
+                    Fluttertoast.showToast(
+                        msg: "Items Registered Successfully",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.green,
+                        textColor: Colors.white,
+                        fontSize: 18.0);
                     Navigator.of(context).pop();
                   }
                 });
