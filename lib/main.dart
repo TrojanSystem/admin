@@ -1,8 +1,8 @@
-import 'package:ada_bread/dataHub/data/expenses_data.dart';
+import 'package:ada_bread/crediential/login_screen.dart';
 import 'package:ada_bread/data_provider.dart';
-import 'package:ada_bread/main_screen/homepage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'dataHub/data/daily_production_data.dart';
@@ -14,7 +14,10 @@ import 'expense_screen/daily_expense_pdf_report.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const AdaBread());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(const AdaBread());
+  });
 }
 
 class AdaBread extends StatefulWidget {
@@ -34,15 +37,12 @@ class _AdaBreadState extends State<AdaBread> {
         ),
         ChangeNotifierProvider(
           create: (BuildContext context) => DataProvider()
-            ..loadProductionList()
             ..loadSoldList()
+            ..loadLoggedUser()
             ..loadExpenseList(),
         ),
         ChangeNotifierProvider(
           create: (BuildContext context) => FileHandlerForExpense(),
-        ),
-        ChangeNotifierProvider(
-          create: (BuildContext context) => ExpensesData()..loadExpenseList(),
         ),
         ChangeNotifierProvider(
           create: (BuildContext context) => OrderDataHub()..loadOrderList(),
@@ -55,9 +55,9 @@ class _AdaBreadState extends State<AdaBread> {
               ProductionModelData()..loadContratList(),
         ),
       ],
-      child: MaterialApp(
+      child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: HomePage(),
+        home: SignInScreen(),
       ),
     );
   }

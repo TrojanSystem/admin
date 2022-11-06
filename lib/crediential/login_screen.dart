@@ -12,16 +12,16 @@ import '../main_screen/homepage.dart';
 
 bool _isLoading = false;
 
-class LoginDemo extends StatefulWidget {
-  const LoginDemo({Key key}) : super(key: key);
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({Key key}) : super(key: key);
 
   @override
-  _LoginDemoState createState() => _LoginDemoState();
+  _SignInScreenState createState() => _SignInScreenState();
 }
 
-class _LoginDemoState extends State<LoginDemo> {
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _EmailController = TextEditingController();
+class _SignInScreenState extends State<SignInScreen> {
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final auth = FirebaseAuth.instance;
   final formKey = GlobalKey<FormState>();
   final _passFocus = FocusNode();
@@ -34,7 +34,7 @@ class _LoginDemoState extends State<LoginDemo> {
     _passFocus.dispose();
     _emailFocus.dispose();
     _passwordController.dispose();
-    _EmailController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
@@ -97,7 +97,7 @@ class _LoginDemoState extends State<LoginDemo> {
                             keyboardType: TextInputType.emailAddress,
                             onEditingComplete: () =>
                                 FocusScope.of(context).requestFocus(_passFocus),
-                            controller: _EmailController,
+                            controller: _emailController,
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'Email can\'t be empty';
@@ -186,7 +186,7 @@ class _LoginDemoState extends State<LoginDemo> {
                               ),
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(color: Colors.red),
+                                borderSide: const BorderSide(color: Colors.red),
                               ),
                             ),
                           ),
@@ -220,7 +220,7 @@ class _LoginDemoState extends State<LoginDemo> {
                       _isLoading = true;
                     });
                     try {
-                      _EmailController.clear();
+                      _emailController.clear();
                       _passwordController.clear();
                       final user = await auth.signInWithEmailAndPassword(
                           email: userEmail, password: userPassword);
@@ -256,7 +256,7 @@ class _LoginDemoState extends State<LoginDemo> {
                                   onPressed: () {
                                     Navigator.of(context).pop(true);
                                   },
-                                  child: Text('Ok'),
+                                  child: const Text('Ok'),
                                 )
                               ],
                             );
@@ -298,7 +298,8 @@ class _LoginDemoState extends State<LoginDemo> {
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (ctx) => SignUpScreen()),
+                        MaterialPageRoute(
+                            builder: (ctx) => const SignUpScreen()),
                       );
                     },
                     child: const Text('Create Account'),

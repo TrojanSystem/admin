@@ -67,7 +67,8 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               );
             }
-            final expense = Provider.of<DataProvider>(context).expenseList;
+            final expense =
+                Provider.of<DataProvider>(context, listen: false).expenseList;
 
             final result = expense
                 .where((element) =>
@@ -85,21 +86,28 @@ class _MainScreenState extends State<MainScreen> {
                     DateTime.parse(element['itemDate']).day ==
                     selectedDayOfMonth)
                 .toList();
-            var expenseItemQuantity =
-                dailyExpense.map((e) => e['itemQuantity']).toList();
-
-            var expenseItemPrice =
-                dailyExpense.map((e) => e['itemPrice']).toList();
-
-            var totalExpected = 0.0;
-            for (int x = 0; x < expenseItemPrice.length; x++) {
-              totalExpected += (double.parse(expenseItemQuantity[x]) *
-                  double.parse(expenseItemPrice[x]));
+            var totalExpenses = result.map((e) => e['itemPrice']).toList();
+            var totalExpensesQuantity =
+                result.map((e) => e['itemQuantity']).toList();
+            var totExpenseSum = 0.0;
+            for (int xx = 0; xx < totalExpenses.length; xx++) {
+              totExpenseSum += (double.parse(totalExpenses[xx]) *
+                  double.parse(totalExpensesQuantity[xx]));
             }
-
+            var totalMonthlyExpenses =
+                dailyExpense.map((e) => e['itemPrice']).toList();
+            var totalMonthlyExpensesQuantity =
+                dailyExpense.map((e) => e['itemQuantity']).toList();
+            final dailyExpensesAdmin =
+                Provider.of<DataProvider>(context).dailyExpense;
+            var totMonthlyExpenseSum = 0.0;
+            for (int xx = 0; xx < totalMonthlyExpenses.length; xx++) {
+              totMonthlyExpenseSum += (double.parse(totalMonthlyExpenses[xx]) *
+                  double.parse(totalMonthlyExpensesQuantity[xx]));
+            }
             final productionData = snap.data.docs;
             final loggedInEmployee =
-                Provider.of<DataProvider>(context).production;
+                Provider.of<DataProvider>(context).loggedUserList;
             var shopSold = loggedInEmployee
                 .where((element) =>
                     DateTime.parse(element['loggedDate']).day ==
@@ -148,7 +156,7 @@ class _MainScreenState extends State<MainScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Daily Expense: $totalExpected',
+                                  'Daily Expense: $dailyExpensesAdmin',
                                   style: dailyIncomeStyle,
                                 ),
                                 const SizedBox(

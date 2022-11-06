@@ -1,12 +1,11 @@
+import 'package:ada_bread/crediential/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import '../crediential/login_screen.dart';
 
 class BottomUserInfo extends StatelessWidget {
   final bool isCollapsed;
 
-  const BottomUserInfo({
+  BottomUserInfo({
     Key key,
     this.isCollapsed,
   }) : super(key: key);
@@ -39,7 +38,7 @@ class BottomUserInfo extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         child: Image.asset(
                           'images/logo.jpg',
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ),
@@ -54,7 +53,7 @@ class BottomUserInfo extends StatelessWidget {
                           child: Align(
                             alignment: Alignment.bottomLeft,
                             child: Text(
-                              'Sisay Mamo',
+                              'Admin',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -67,7 +66,7 @@ class BottomUserInfo extends StatelessWidget {
                         ),
                         Expanded(
                           child: Text(
-                            'Seller',
+                            'Manager',
                             style: TextStyle(
                               color: Colors.grey,
                             ),
@@ -86,10 +85,11 @@ class BottomUserInfo extends StatelessWidget {
                       child: IconButton(
                         onPressed: () {
                           FirebaseAuth.instance.signOut();
-                          Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute(
-                            builder: (ctx) => LoginDemo(),
-                          ));
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (ctx) => const SignInScreen(),
+                            ),
+                          );
                         },
                         icon: const Icon(
                           Icons.logout,
@@ -116,7 +116,7 @@ class BottomUserInfo extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       child: Image.asset(
                         'images/logo.jpg',
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
@@ -126,7 +126,7 @@ class BottomUserInfo extends StatelessWidget {
                     onPressed: () {
                       FirebaseAuth.instance.signOut();
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (ctx) => LoginDemo(),
+                        builder: (ctx) => SignInScreen(),
                       ));
                     },
                     icon: const Icon(

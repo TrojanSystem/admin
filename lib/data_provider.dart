@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 class DataProvider extends ChangeNotifier {
   final List<Map<String, dynamic>> production = [];
   final List<Map<String, dynamic>> expenseList = [];
+  final List<Map<String, dynamic>> loggedUserList = [];
+  final List<Map<String, dynamic>> adminUserList = [];
   final List<Map<String, dynamic>> databaseDataForShop = [];
   double totalPrice = 0;
   double totalIncomePrice = 0;
@@ -30,15 +32,10 @@ class DataProvider extends ChangeNotifier {
     //notifyListeners();
   }
 
-  void loadProductionList() async {
-    notifyListeners();
-    await for (var x
-        in FirebaseFirestore.instance.collection('LoggedUser').snapshots()) {
-      for (var snap in x.docs) {
-        notifyListeners();
-        production.add(snap.data());
-      }
-    }
+  String dailyExpense = '';
+  assign(String expense) {
+    dailyExpense = expense;
+
     notifyListeners();
   }
 
@@ -62,6 +59,18 @@ class DataProvider extends ChangeNotifier {
       for (var snapSell in y.docs) {
         notifyListeners();
         expenseList.add(snapSell.data());
+      }
+    }
+    notifyListeners();
+  }
+
+  void loadLoggedUser() async {
+    notifyListeners();
+    await for (var y
+        in FirebaseFirestore.instance.collection('LoggedUser').snapshots()) {
+      for (var snapSell in y.docs) {
+        notifyListeners();
+        loggedUserList.add(snapSell.data());
       }
     }
     notifyListeners();

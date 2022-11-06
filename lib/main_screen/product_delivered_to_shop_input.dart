@@ -15,6 +15,14 @@ class ProductDeliveredToShopInput extends StatefulWidget {
 class _ProductDeliveredToShopInputState
     extends State<ProductDeliveredToShopInput> {
   final formKey = GlobalKey<FormState>();
+  final TextEditingController _bale_5_SP = TextEditingController();
+  final TextEditingController _bale_10_SP = TextEditingController();
+  final TextEditingController _slice_SP = TextEditingController();
+  final TextEditingController _bombolino_SP = TextEditingController();
+  final TextEditingController _bale_5 = TextEditingController();
+  final TextEditingController _bale_10 = TextEditingController();
+  final TextEditingController _slice = TextEditingController();
+  final TextEditingController _bombolino = TextEditingController();
   String bale_5_SP = '';
   String bale_10_SP = '';
   String slice_SP = '';
@@ -37,6 +45,19 @@ class _ProductDeliveredToShopInputState
             dateTime = DateTime.now().toString();
           }
         }));
+  }
+
+  @override
+  void dispose() {
+    _bale_5_SP.dispose();
+    _bale_10_SP.dispose();
+    _slice_SP.dispose();
+    _bombolino_SP.dispose();
+    _bale_5.dispose();
+    _bale_10.dispose();
+    _slice.dispose();
+    _bombolino.dispose();
+    super.dispose();
   }
 
   @override
@@ -72,6 +93,7 @@ class _ProductDeliveredToShopInputState
                           height: 5,
                         ),
                         TextFormField(
+                          controller: _bale_5,
                           validator: (value) {
                             if (value == null) {
                               return 'Daily production can\'t be empty';
@@ -118,6 +140,7 @@ class _ProductDeliveredToShopInputState
                           height: 5,
                         ),
                         TextFormField(
+                          controller: _bale_5_SP,
                           validator: (value) {
                             if (value == null) {
                               return 'Daily production can\'t be empty';
@@ -168,6 +191,7 @@ class _ProductDeliveredToShopInputState
                           height: 5,
                         ),
                         TextFormField(
+                          controller: _bale_10,
                           validator: (value) {
                             if (value == null) {
                               return 'Daily production can\'t be empty';
@@ -213,6 +237,7 @@ class _ProductDeliveredToShopInputState
                           height: 5,
                         ),
                         TextFormField(
+                          controller: _bale_10_SP,
                           validator: (value) {
                             if (value == null) {
                               return 'Daily production can\'t be empty';
@@ -263,6 +288,7 @@ class _ProductDeliveredToShopInputState
                           height: 5,
                         ),
                         TextFormField(
+                          controller: _slice,
                           validator: (value) {
                             if (value == null) {
                               return 'Daily production can\'t be empty';
@@ -308,6 +334,7 @@ class _ProductDeliveredToShopInputState
                           height: 5,
                         ),
                         TextFormField(
+                          controller: _slice_SP,
                           validator: (value) {
                             if (value == null) {
                               return 'Daily production can\'t be empty';
@@ -358,6 +385,7 @@ class _ProductDeliveredToShopInputState
                           height: 10,
                         ),
                         TextFormField(
+                          controller: _bombolino,
                           validator: (value) {
                             if (value == null) {
                               return 'Daily production can\'t be empty';
@@ -403,6 +431,7 @@ class _ProductDeliveredToShopInputState
                           height: 10,
                         ),
                         TextFormField(
+                          controller: _bombolino_SP,
                           validator: (value) {
                             if (value == null) {
                               return 'Daily production can\'t be empty';
@@ -496,6 +525,14 @@ class _ProductDeliveredToShopInputState
                       'bombolino': bombolino,
                       'givenDate': dateTime
                     });
+                    _bale_5.clear();
+                    _bale_5_SP.clear();
+                    _bale_10.clear();
+                    _bale_10_SP.clear();
+                    _slice.clear();
+                    _slice_SP.clear();
+                    _bombolino.clear();
+                    _bombolino_SP.clear();
                     Fluttertoast.showToast(
                         msg: "Delivered",
                         toastLength: Toast.LENGTH_SHORT,

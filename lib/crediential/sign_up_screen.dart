@@ -1,4 +1,5 @@
 import 'package:ada_bread/crediential/login_screen.dart';
+import 'package:ada_bread/main_screen/homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +20,8 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _UserNameController = TextEditingController();
-  final TextEditingController _EmailController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final _userNameFocus = FocusNode();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
@@ -36,8 +37,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
     _passwordController.dispose();
-    _EmailController.dispose();
-    _UserNameController.dispose();
+    _emailController.dispose();
+    _userNameController.dispose();
     super.dispose();
   }
 
@@ -100,7 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             textInputAction: TextInputAction.next,
                             onEditingComplete: () => FocusScope.of(context)
                                 .requestFocus(_emailFocusNode),
-                            controller: _UserNameController,
+                            controller: _userNameController,
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'Username can\'t be empty';
@@ -125,7 +126,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.red),
+                                  borderSide:
+                                      const BorderSide(color: Colors.red),
                                   borderRadius: BorderRadius.circular(10),
                                 )),
                           ),
@@ -153,7 +155,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             textInputAction: TextInputAction.next,
                             onEditingComplete: () => FocusScope.of(context)
                                 .requestFocus(_passwordFocusNode),
-                            controller: _EmailController,
+                            controller: _emailController,
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'Email can\'t be empty';
@@ -243,7 +245,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(color: Colors.red),
+                                borderSide: const BorderSide(color: Colors.red),
                               ),
                             ),
                           ),
@@ -261,12 +263,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       _isRegistering = true;
                     });
                     try {
-                      _EmailController.clear();
-                      _UserNameController.clear();
+                      _emailController.clear();
+                      _userNameController.clear();
                       _passwordController.clear();
                       final user = await auth.createUserWithEmailAndPassword(
                           email: userEmail, password: userPassword);
                       if (user != null) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (ctx) => HomePage(),
+                          ),
+                        );
                         setState(() {
                           _isRegistering = false;
                         });
@@ -287,7 +294,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     color: Colors.red,
                                     fontWeight: FontWeight.w900),
                               ),
-                              content: Text(e, overflow: TextOverflow.visible),
+                              content: Text(e.toString(),
+                                  overflow: TextOverflow.visible),
                               actions: [
                                 TextButton(
                                     onPressed: () {
@@ -336,7 +344,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     onPressed: () {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (ctx) => const LoginDemo(),
+                          builder: (ctx) => const SignInScreen(),
                         ),
                       );
                     },

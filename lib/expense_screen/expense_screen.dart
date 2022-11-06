@@ -84,6 +84,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
               totMonthlyExpenseSum += (double.parse(totalMonthlyExpenses[xx]) *
                   double.parse(totalMonthlyExpensesQuantity[xx]));
             }
+
             return Column(
               children: [
                 Expanded(

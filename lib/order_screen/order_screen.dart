@@ -171,9 +171,9 @@ class _OrderScreenState extends State<OrderScreen> {
                           : ListView.builder(
                               itemCount: dailyOrder.length,
                               itemBuilder: (context, index) {
-                                int payedBirr = int.parse(
+                                int remain = int.parse(
                                         dailyOrder[index]['totalAmount']) -
-                                    int.parse(dailyOrder[index]['remain']);
+                                    int.parse(dailyOrder[index]['payed']);
                                 return Slidable(
                                   endActionPane: ActionPane(
                                     motion: const ScrollMotion(),
@@ -189,9 +189,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                                 .push(MaterialPageRoute(
                                               builder: (context) =>
                                                   UpdateOrderReceived(
-                                                id: orderData[index]
-                                                    .id
-                                                    .toString(),
+                                                id: orderData[index].id,
                                                 existedName: dailyOrder[index]
                                                     ['name'],
                                                 existedOrderedKilo:
@@ -206,8 +204,8 @@ class _OrderScreenState extends State<OrderScreen> {
                                                 existedPricePerKG:
                                                     dailyOrder[index]
                                                         ['pricePerKG'],
-                                                existedRemain: dailyOrder[index]
-                                                    ['remain'],
+                                                existedPayed: dailyOrder[index]
+                                                    ['payed'],
                                                 existedDateTime:
                                                     dailyOrder[index]['date'],
                                               ),
@@ -247,7 +245,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                               ),
                                             ],
                                             content: const Text(
-                                                'Do you want to remove the Labour from the List?'),
+                                                'Do you want to remove the order from the List?'),
                                           ),
                                         ),
                                         icon: const Icon(
@@ -440,7 +438,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                                                 .start,
                                                         children: [
                                                           Text(
-                                                            'Payed: $payedBirr',
+                                                            'Payed: ${dailyOrder[index]['payed']}',
                                                             style: const TextStyle(
                                                                 fontWeight:
                                                                     FontWeight
@@ -448,7 +446,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                                                 fontSize: 18),
                                                           ),
                                                           Text(
-                                                            'Remain: ${dailyOrder[index]['remain']}',
+                                                            'Remain: $remain',
                                                             style: const TextStyle(
                                                                 fontWeight:
                                                                     FontWeight

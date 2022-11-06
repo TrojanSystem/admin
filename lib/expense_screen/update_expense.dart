@@ -40,11 +40,26 @@ class _UpdateExpenseState extends State<UpdateExpense> {
   }
 
   final formKey = GlobalKey<FormState>();
+  TextEditingController _itemName = TextEditingController();
+  TextEditingController _itemDescription = TextEditingController();
+  TextEditingController _itemQuantity = TextEditingController();
+  TextEditingController _itemPrice = TextEditingController();
+  TextEditingController _itemDate = TextEditingController();
+
   String itemName = '';
   String itemDescription = '';
   String itemQuantity = '';
   String itemPrice = '';
   String itemDate = DateTime.now().toString();
+  @override
+  void dispose() {
+    _itemName.dispose();
+    _itemDescription.dispose();
+    _itemQuantity.dispose();
+    _itemPrice.dispose();
+    _itemDate.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -288,12 +303,17 @@ class _UpdateExpenseState extends State<UpdateExpense> {
                         .collection('EmployeeExpenses')
                         .doc(widget.index)
                         .update({
+                      'expenseType': 'admin',
                       'itemName': itemName,
                       'itemDate': itemDate,
                       'itemQuantity': itemQuantity,
                       'itemPrice': itemPrice,
                       'itemDescription': itemDescription,
                     });
+                    _itemName.clear();
+                    _itemQuantity.clear();
+                    _itemPrice.clear();
+                    _itemDescription.clear();
                     Fluttertoast.showToast(
                         msg: "Updated",
                         toastLength: Toast.LENGTH_SHORT,

@@ -11,6 +11,9 @@ class ContratInput extends StatefulWidget {
 
 class _ContratInputState extends State<ContratInput> {
   final formKey = GlobalKey<FormState>();
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _quantity = TextEditingController();
+  final TextEditingController _price = TextEditingController();
   String name = '';
   int quantity = 0;
   double price = 0;
@@ -28,6 +31,14 @@ class _ContratInputState extends State<ContratInput> {
             dateTime = DateTime.now().toString();
           }
         }));
+  }
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _price.dispose();
+    _quantity.dispose();
+    super.dispose();
   }
 
   @override
@@ -236,6 +247,9 @@ class _ContratInputState extends State<ContratInput> {
                       'quantity': quantity.toString(),
                       'price': price.toString(),
                     });
+                    _name.clear();
+                    _price.clear();
+                    _quantity.clear();
                     Navigator.of(context).pop();
                   }
                 });
