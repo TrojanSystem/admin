@@ -1,3 +1,5 @@
+import 'package:ada_bread/main_screen/seller_detail.dart';
+import 'package:ada_bread/profit_analysis/summary_expense_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -299,7 +301,7 @@ class _ProfitAnalaysisState extends State<ProfitAnalaysis> {
                                 top: 25, bottom: 25, left: 5),
                             child: Center(
                               child: Text(
-                                '${monthOfYear[widget.index]}',
+                                monthOfYear[widget.index],
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w900,
@@ -403,7 +405,7 @@ class _ProfitAnalaysisState extends State<ProfitAnalaysis> {
                                     top: 25, bottom: 20, left: 5),
                                 child: Center(
                                   child: Text(
-                                    '${monthOfYear[widget.index]}',
+                                    monthOfYear[widget.index],
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w900,
@@ -429,7 +431,7 @@ class _ProfitAnalaysisState extends State<ProfitAnalaysis> {
                                             style: kkSummaryIncome,
                                           ),
                                           Text(
-                                            'sumIncome',
+                                            '$summaryMonthlyIncome',
                                             style: kkSummaryIncome,
                                           ),
                                         ],
@@ -445,8 +447,10 @@ class _ProfitAnalaysisState extends State<ProfitAnalaysis> {
                                             'Expense',
                                             style: kkSummaryExpense,
                                           ),
-                                          Text('sumExpense',
-                                              style: kkSummaryExpense),
+                                          Text(
+                                            '$totMonthlyExpenseSum',
+                                            style: kkSummaryExpense,
+                                          ),
                                         ],
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -470,7 +474,7 @@ class _ProfitAnalaysisState extends State<ProfitAnalaysis> {
                                             ),
                                           ),
                                           Text(
-                                            'totalSummaryDetail',
+                                            '${totalSummaryDetail(summaryMonthlyIncome, totMonthlyExpenseSum)}',
                                             style: TextStyle(
                                               color: isNegative
                                                   ? Colors.red
@@ -505,7 +509,14 @@ class _ProfitAnalaysisState extends State<ProfitAnalaysis> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 10.0),
                                   child: TextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (ctx) =>
+                                              const SellerDetail(),
+                                        ),
+                                      );
+                                    },
                                     child: const Text(
                                       'Income Detail',
                                       style: TextStyle(
@@ -521,7 +532,19 @@ class _ProfitAnalaysisState extends State<ProfitAnalaysis> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 15.0),
                                   child: TextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (ctx) => SummaryExpenseList(
+                                            month: monthOfYear[widget.index],
+                                            selectedCurrentYear:
+                                                widget.currentYear,
+                                            summaryDataList:
+                                                widget.yearlyExpense,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                     child: const Text(
                                       'Expense Detail',
                                       style: TextStyle(

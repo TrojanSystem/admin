@@ -6,6 +6,7 @@ class DataProvider extends ChangeNotifier {
   final List<Map<String, dynamic>> expenseList = [];
   final List<Map<String, dynamic>> loggedUserList = [];
   final List<Map<String, dynamic>> adminUserList = [];
+  final List<Map<String, dynamic>> databaseDataForProduction = [];
   final List<Map<String, dynamic>> databaseDataForShop = [];
   double totalPrice = 0;
   double totalIncomePrice = 0;
@@ -46,6 +47,18 @@ class DataProvider extends ChangeNotifier {
       for (var snapSell in y.docs) {
         notifyListeners();
         databaseDataForShop.add(snapSell.data());
+      }
+    }
+    notifyListeners();
+  }
+
+  void loadProductionList() async {
+    notifyListeners();
+    await for (var y
+        in FirebaseFirestore.instance.collection('DailySell').snapshots()) {
+      for (var snapSell in y.docs) {
+        notifyListeners();
+        databaseDataForProduction.add(snapSell.data());
       }
     }
     notifyListeners();

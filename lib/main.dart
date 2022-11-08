@@ -39,6 +39,7 @@ class _AdaBreadState extends State<AdaBread> {
           create: (BuildContext context) => DataProvider()
             ..loadSoldList()
             ..loadLoggedUser()
+            ..loadProductionList()
             ..loadExpenseList(),
         ),
         ChangeNotifierProvider(

@@ -3,31 +3,34 @@
 // import 'package:intl/intl.dart';
 // import 'package:provider/provider.dart';
 //
-// import 'data_storage/expenses_data.dart';
-//
-// class SummaryExpenseList extends StatelessWidget {
+// class SummaryIncomeList extends StatelessWidget {
 //   // final int index;
 //   final String month;
 //   final int selectedCurrentYear;
 //
-//   SummaryExpenseList({this.month, this.selectedCurrentYear});
+//   SummaryIncomeList({this.month, this.selectedCurrentYear});
 //
 //   @override
 //   Widget build(BuildContext context) {
-//     final accessor = Provider.of<ExpensesData>(context);
+//     final summaryDataList = Provider.of<DailySellData>(context).dailySellList;
+//     final filtereByYear = summaryDataList
+//         .where((element) =>
+//             DateTime.parse(element.itemDate).year == selectedCurrentYear)
+//         .toList();
 //
+//     var monthExpense = filtereByYear
+//         .where((element) =>
+//             DateFormat.MMM()
+//                 .format(DateTime.parse(element.itemDate))
+//                 .toString() ==
+//             month.toString())
+//         .toList();
 //     double _w = MediaQuery.of(context).size.width;
 //     return Scaffold(
 //       appBar: AppBar(
 //           elevation: 0,
 //           backgroundColor: const Color.fromRGBO(3, 83, 151, 1).withOpacity(0.9),
-//           title: Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//             children: const [
-//               Text('Expense Detail'),
-//               //   x.isEmpty ? const Text('') : Text('Budget : ${x.last.budget.toString()}'),
-//             ],
-//           ),
+//           title: const Text('Income Detail'),
 //           centerTitle: true,
 //           brightness: Brightness.dark),
 //       body: AnimationLimiter(
@@ -35,8 +38,9 @@
 //           padding: EdgeInsets.all(_w / 30),
 //           physics: const BouncingScrollPhysics(
 //               parent: AlwaysScrollableScrollPhysics()),
-//           itemCount: 3,
+//           itemCount: monthExpense.length,
 //           itemBuilder: (BuildContext context, int index) {
+//             monthExpense.sort((a, b) => b.itemDate.compareTo(a.itemDate));
 //             return AnimationConfiguration.staggeredList(
 //               position: index,
 //               delay: const Duration(milliseconds: 100),
@@ -46,8 +50,22 @@
 //                 horizontalOffset: -300,
 //                 verticalOffset: -850,
 //                 child: GestureDetector(
-//                   onTap: () {},
-//                   onLongPress: () {},
+//                   onTap: () {
+//                     Navigator.of(context).push(
+//                       MaterialPageRoute(
+//                         builder: (_) => UpdateDailySell(
+//                           index: monthExpense[index].id,
+//                           existedItemName: monthExpense[index].itemName,
+//                           existedItemDate: monthExpense[index].itemDate,
+//                           existedItemPrice: monthExpense[index].itemPrice,
+//                           existedItemQuantity: monthExpense[index].itemQuantity,
+//                         ),
+//                       ),
+//                     );
+//                   },
+//                   onLongPress: () {
+//                     accessor.deleteDailySellList(monthExpense[index].id);
+//                   },
 //                   child: Container(
 //                     child: Stack(
 //                       children: [
@@ -70,7 +88,8 @@
 //                                   ),
 //                                   Text(
 //                                     DateFormat.yMMMEd().format(
-//                                       DateTime.parse(DateTime.now().toString()),
+//                                       DateTime.parse(
+//                                           monthExpense[index].itemDate),
 //                                     ),
 //                                     style: const TextStyle(
 //                                       color: Colors.black,
@@ -87,7 +106,7 @@
 //                                 crossAxisAlignment: CrossAxisAlignment.start,
 //                                 children: [
 //                                   Text(
-//                                     'itemName',
+//                                     monthExpense[index].itemName,
 //                                     style: const TextStyle(
 //                                       color: Colors.black,
 //                                       fontSize: 20,
@@ -98,7 +117,7 @@
 //                                     height: 5,
 //                                   ),
 //                                   Text(
-//                                     'itemQuantity',
+//                                     'x ${monthExpense[index].itemQuantity}',
 //                                     style: const TextStyle(
 //                                       color: Colors.black,
 //                                       fontSize: 15,
@@ -115,20 +134,20 @@
 //                           left: 20,
 //                           child: Container(
 //                             decoration: BoxDecoration(
-//                               color: Colors.red,
+//                               color: Colors.green,
 //                               borderRadius: BorderRadius.circular(10),
 //                             ),
 //                             width: 120,
 //                             height: 25,
 //                             child: Row(
 //                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                               children: const [
-//                                 Icon(
+//                               children: [
+//                                 const Icon(
 //                                   Icons.arrow_downward_rounded,
 //                                   size: 20,
 //                                   color: Colors.white,
 //                                 ),
-//                                 Text(
+//                                 const Text(
 //                                   'ETB ',
 //                                   style: TextStyle(
 //                                     color: Colors.white,
@@ -137,8 +156,8 @@
 //                                   ),
 //                                 ),
 //                                 Text(
-//                                   'itemPrice',
-//                                   style: TextStyle(
+//                                   monthExpense[index].itemPrice.toString(),
+//                                   style: const TextStyle(
 //                                     color: Colors.white,
 //                                     fontSize: 15,
 //                                     fontWeight: FontWeight.bold,

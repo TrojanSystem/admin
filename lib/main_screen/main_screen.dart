@@ -45,11 +45,13 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ADA BREAD',
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: 25,
-            )),
+        title: const Text(
+          'ADA BREAD',
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+            fontSize: 25,
+          ),
+        ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: const Color.fromRGBO(3, 83, 151, 1),
@@ -156,7 +158,7 @@ class _MainScreenState extends State<MainScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Daily Expense: $dailyExpensesAdmin',
+                                  'Daily Expense: $totMonthlyExpenseSum',
                                   style: dailyIncomeStyle,
                                 ),
                                 const SizedBox(
