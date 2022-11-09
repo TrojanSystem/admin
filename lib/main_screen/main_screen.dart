@@ -2,7 +2,6 @@ import 'package:ada_bread/dataHub/data/daily_production_data.dart';
 import 'package:ada_bread/data_provider.dart';
 import 'package:ada_bread/drawer/custom_drawer.dart';
 import 'package:ada_bread/main_screen/product_delivered_to_shop_input.dart';
-import 'package:ada_bread/main_screen/seller_detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
@@ -1100,11 +1099,7 @@ class _MainScreenState extends State<MainScreen> {
             primaryColor: Colors.red,
             button_1: () {},
             button_2: () {},
-            button_3: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (ctx) => const SellerDetail()),
-              );
-            },
+            button_3: () {},
             button_4: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (ctx) => ProfitAnalaysisScreen()),

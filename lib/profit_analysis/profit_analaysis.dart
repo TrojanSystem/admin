@@ -512,8 +512,8 @@ class _ProfitAnalaysisState extends State<ProfitAnalaysis> {
                                     onPressed: () {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
-                                          builder: (ctx) =>
-                                              const SellerDetail(),
+                                          builder: (ctx) => SellerDetail(
+                                              selectedMonth: widget.index + 1),
                                         ),
                                       );
                                     },
