@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 
 import '../constants.dart';
 import '../dataHub/data/data_storage.dart';
-import '../drop_down_menu_button.dart';
 import '../profit_analysis/profit_analysis_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -1094,19 +1093,20 @@ class _MainScreenState extends State<MainScreen> {
               ],
             );
           }),
-      floatingActionButton: Builder(
-        builder: (context) => DropDownMenuButton(
-            primaryColor: Colors.red,
-            button_1: () {},
-            button_2: () {},
-            button_3: () {},
-            button_4: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (ctx) => ProfitAnalaysisScreen()),
-              );
-            }),
+      floatingActionButton: Align(
+        alignment: Alignment.centerRight,
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (ctx) => const ProfitAnalaysisScreen()),
+            );
+          },
+          child: Image.asset('images/graphic-progression.png'),
+          backgroundColor: Colors.transparent,
+        ),
       ),
-      drawer: CustomDrawer(),
+      drawer: const CustomDrawer(),
     );
   }
 }

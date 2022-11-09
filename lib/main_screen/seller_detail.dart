@@ -687,7 +687,7 @@ class _SellerDetailState extends State<SellerDetail> {
                               child: Swiper(
                                 indicatorLayout: PageIndicatorLayout.COLOR,
                                 autoplay: true,
-                                autoplayDelay: 5000,
+                                autoplayDelay: 3000,
                                 pagination: const SwiperPagination(),
                                 control: const SwiperControl(),
                                 itemBuilder: (context, index) {

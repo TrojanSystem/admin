@@ -183,7 +183,6 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
               ),
             );
           },
-          button_4: () {},
         ),
       ),
     );

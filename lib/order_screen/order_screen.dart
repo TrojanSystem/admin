@@ -508,23 +508,23 @@ class _OrderScreenState extends State<OrderScreen> {
           }),
       floatingActionButton: Builder(
         builder: (context) => DropDownMenuButton(
-            primaryColor: Colors.red,
-            button_1: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (ctx) => const DfoOrder(),
-                ),
-              );
-            },
-            button_2: () {},
-            button_3: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (ctx) => OrderListItem(monthlyOrder: result),
-                ),
-              );
-            },
-            button_4: () {}),
+          primaryColor: Colors.red,
+          button_1: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (ctx) => const DfoOrder(),
+              ),
+            );
+          },
+          button_2: () {},
+          button_3: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (ctx) => OrderListItem(monthlyOrder: result),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

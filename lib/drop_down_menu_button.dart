@@ -3,27 +3,30 @@ import 'package:flutter/material.dart';
 
 class DropDownMenuButton extends StatelessWidget {
   final GlobalKey<FabCircularMenuState> fabKey = GlobalKey();
+
   final Function button_1;
   final Function button_2;
   final Function button_3;
-  final Function button_4;
+
   final Color primaryColor;
 
   DropDownMenuButton(
-      {this.button_1,
-      this.button_2,
-      this.button_3,
-      this.button_4,
-      this.primaryColor});
+      {Key key,
+      @required this.button_1,
+      @required this.button_2,
+      @required this.button_3,
+      @required this.primaryColor})
+      : super(key: key);
 
+  @override
   Widget build(BuildContext context) {
     return FabCircularMenu(
       key: fabKey,
       // Cannot be `Alignment.center`
       alignment: Alignment.centerRight,
       ringColor: const Color.fromRGBO(3, 83, 151, 1).withOpacity(0.8),
-      ringDiameter: 430.0,
-      ringWidth: 150.0,
+      ringDiameter: 350.0,
+      ringWidth: 110.0,
       fabSize: 50.0,
       fabElevation: 8.0,
       fabIconBorder: const CircleBorder(),
@@ -40,21 +43,18 @@ class DropDownMenuButton extends StatelessWidget {
       animationCurve: Curves.easeInOutCirc,
       onDisplayChange: (isOpen) {},
       children: <Widget>[
-        Container(
-          // padding: const EdgeInsets.fromLTRB(24.0, 100, 24, 24),
-          child: RawMaterialButton(
-            fillColor: Colors.green,
-            onPressed: () {
-              button_1();
-              fabKey.currentState.close();
-            },
-            shape: const CircleBorder(),
-            //padding: const EdgeInsets.fromLTRB(24.0, 100, 24, 24),
-            child: const Icon(
-              Icons.add,
-              color: Colors.white,
-              size: 35,
-            ),
+        RawMaterialButton(
+          fillColor: Colors.green,
+          onPressed: () {
+            button_1();
+            fabKey.currentState.close();
+          },
+          shape: const CircleBorder(),
+          //padding: const EdgeInsets.fromLTRB(24.0, 100, 24, 24),
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 35,
           ),
         ),
         RawMaterialButton(
@@ -82,18 +82,18 @@ class DropDownMenuButton extends StatelessWidget {
             width: 50,
           ),
         ),
-        RawMaterialButton(
-          onPressed: () {
-            button_4();
-            fabKey.currentState.close();
-          },
-          shape: const CircleBorder(),
-          padding: const EdgeInsets.all(24.0),
-          child: const Image(
-            image: AssetImage('images/graphic-progression.png'),
-            width: 40,
-          ),
-        )
+        // RawMaterialButton(
+        //   onPressed: () {
+        //     button_4();
+        //     fabKey.currentState.close();
+        //   },
+        //   shape: const CircleBorder(),
+        //   padding: const EdgeInsets.all(24.0),
+        //   child: const Image(
+        //     image: AssetImage('images/graphic-progression.png'),
+        //     width: 40,
+        //   ),
+        // )
       ],
     );
   }

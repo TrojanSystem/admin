@@ -287,24 +287,24 @@ class _ItemDetailsState extends State<ItemDetails> {
           }),
       floatingActionButton: Builder(
         builder: (context) => DropDownMenuButton(
-            primaryColor: Colors.red,
-            button_1: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (ctx) => const ContratInput(),
-                ),
-              );
-            },
-            button_2: () {},
-            button_3: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (ctx) => ContractListDetail(
-                      totPrice: totPriceDabo, total: sumDabo),
-                ),
-              );
-            },
-            button_4: () {}),
+          primaryColor: Colors.red,
+          button_1: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (ctx) => const ContratInput(),
+              ),
+            );
+          },
+          button_2: () {},
+          button_3: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (ctx) =>
+                    ContractListDetail(totPrice: totPriceDabo, total: sumDabo),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

@@ -446,19 +446,23 @@ class _ProductionPageState extends State<ProductionPage> {
           }),
       floatingActionButton: Builder(
         builder: (context) => DropDownMenuButton(
-            primaryColor: Colors.red,
-            button_1: () {
-              Navigator.of(context).push(MaterialPageRoute(
+          primaryColor: Colors.red,
+          button_1: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
                 builder: (ctx) => const ProductionInput(),
-              ));
-            },
-            button_2: () {},
-            button_3: () {
-              Navigator.of(context).push(MaterialPageRoute(
+              ),
+            );
+          },
+          button_2: () {},
+          button_3: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
                 builder: (ctx) => const ItemDetails(),
-              ));
-            },
-            button_4: () {}),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
