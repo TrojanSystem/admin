@@ -127,22 +127,24 @@ class _SellerDetailState extends State<SellerDetail> {
                                 DateTime.parse(element['producedDate']).day ==
                                 (index + 1))
                             .toList();
+                    var totalProductionQuantity =
+                        employeeSoldDayFilterForProduction
+                            .map((e) => e['bale_5'])
+                            .toList();
+
+                    var totalDailyProductionBale5Sum = 0;
+                    for (int xx = 0;
+                        xx < totalProductionQuantity.length;
+                        xx++) {
+                      totalDailyProductionBale5Sum +=
+                          int.parse(totalProductionQuantity[xx]);
+                    }
                     final filterOrderByDay = filterByYearOrder
                         .where((element) =>
                             DateTime.parse(element['orderReceivedDate']).day ==
                             (index + 1))
                         .toList();
-                    var totalCDailyProductionBale5Quantity =
-                        employeeSoldDayFilterForProduction
-                            .map((e) => e['bale_5'])
-                            .toList();
-                    var totalDailyProductionSum = 0;
-                    for (int xx = 0;
-                        xx < totalCDailyProductionBale5Quantity.length;
-                        xx++) {
-                      totalDailyProductionSum +=
-                          int.parse(totalCDailyProductionBale5Quantity[xx]);
-                    }
+
                     final filterContractByDay = filterByMonthContract
                         .where((element) =>
                             DateTime.parse(element['date']).day == (index + 1))
@@ -455,12 +457,12 @@ class _SellerDetailState extends State<SellerDetail> {
                     *
                     *
                     * */
-                    int remain = (totalDailyProductionSum -
+                    int remain = (totalDailyProductionBale5Sum -
                         (totalEmployeeSoldSumBale_5 + totalContractGivenSum));
                     final listOfPriceForAdmin = [
                       {
                         'image': 'images/bale_5.png',
-                        'production': '$totalDailyProductionSum',
+                        'production': '$totalDailyProductionBale5Sum',
                         'sold': '$totalEmployeeSoldSumBale_5',
                         'given': '$totalEmployeeSoldSumBale_5ForAdmin',
                         'contract': '$totalContractGivenSum',
@@ -646,6 +648,7 @@ class SwiperWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List title = ['DailyProduced', 'Sold', 'Contract', 'Remain'];
     return Expanded(
       flex: 16,
       child: AnimationLimiter(
@@ -677,98 +680,14 @@ class SwiperWidgets extends StatelessWidget {
                               e['image'],
                               width: 55,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    'DailyProduced',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  Text(
-                                    e['production'],
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    'Sold',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  Text(
-                                    e['sold'],
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    'Contract',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  Text(
-                                    e['contract'],
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    'Remain',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  Text(
-                                    e['remain'],
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            buildDailyActivities(
+                                'DailyProduced', e['production']),
+                            buildDailyActivities('Sold', e['sold']),
+                            e.length == 3
+                                ? ''
+                                : buildDailyActivities(
+                                    'Contract', e['contract']),
+                            buildDailyActivities('Remain', e['remain']),
                           ],
                         ),
                       ),
@@ -778,6 +697,31 @@ class SwiperWidgets extends StatelessWidget {
               )
               .toList(),
         ),
+      ),
+    );
+  }
+
+  Padding buildDailyActivities(String itemTitle, String itemDailyValue) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            itemTitle,
+            style: const TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 18,
+            ),
+          ),
+          Text(
+            itemDailyValue,
+            style: const TextStyle(
+              fontWeight: FontWeight.normal,
+              fontSize: 18,
+            ),
+          ),
+        ],
       ),
     );
   }
