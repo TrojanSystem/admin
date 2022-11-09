@@ -69,16 +69,15 @@ class _SellerDetailState extends State<SellerDetail> {
         .toList();
     final yearFilterForProduction =
         Provider.of<DataProvider>(context).databaseDataForProduction;
-
     final employeeSoldYearFilterForProduction = yearFilterForProduction
         .where((element) =>
-            DateTime.parse(element['date']).year == DateTime.now().year)
+            DateTime.parse(element['producedDate']).year == DateTime.now().year)
         .toList();
 
     var employeeSoldMonthFilterForProduction =
         employeeSoldYearFilterForProduction
             .where((element) =>
-                DateTime.parse(element['date']).month == selectedMonth)
+                DateTime.parse(element['producedDate']).month == selectedMonth)
             .toList();
     return Scaffold(
         appBar: AppBar(
@@ -125,7 +124,7 @@ class _SellerDetailState extends State<SellerDetail> {
                     var employeeSoldDayFilterForProduction =
                         employeeSoldMonthFilterForProduction
                             .where((element) =>
-                                DateTime.parse(element['date']).day ==
+                                DateTime.parse(element['producedDate']).day ==
                                 (index + 1))
                             .toList();
                     final filterOrderByDay = filterByYearOrder
@@ -133,6 +132,17 @@ class _SellerDetailState extends State<SellerDetail> {
                             DateTime.parse(element['orderReceivedDate']).day ==
                             (index + 1))
                         .toList();
+                    var totalCDailyProductionBale5Quantity =
+                        employeeSoldDayFilterForProduction
+                            .map((e) => e['bale_5'])
+                            .toList();
+                    var totalDailyProductionSum = 0;
+                    for (int xx = 0;
+                        xx < totalCDailyProductionBale5Quantity.length;
+                        xx++) {
+                      totalDailyProductionSum +=
+                          int.parse(totalCDailyProductionBale5Quantity[xx]);
+                    }
                     final filterContractByDay = filterByMonthContract
                         .where((element) =>
                             DateTime.parse(element['date']).day == (index + 1))
@@ -445,12 +455,16 @@ class _SellerDetailState extends State<SellerDetail> {
                     *
                     *
                     * */
+                    int remain = (totalDailyProductionSum -
+                        (totalEmployeeSoldSumBale_5 + totalContractGivenSum));
                     final listOfPriceForAdmin = [
                       {
                         'image': 'images/bale_5.png',
+                        'production': '$totalDailyProductionSum',
                         'sold': '$totalEmployeeSoldSumBale_5',
                         'given': '$totalEmployeeSoldSumBale_5ForAdmin',
                         'contract': '$totalContractGivenSum',
+                        'remain': '$remain'
                       },
                     ];
                     final listOfBale_10 = [
@@ -661,20 +675,97 @@ class SwiperWidgets extends StatelessWidget {
                           children: [
                             Image.asset(
                               e['image'],
-                              width: 40,
+                              width: 55,
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(4.0),
+                              padding: const EdgeInsets.all(10.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text(
-                                    'Given',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w900),
+                                    'DailyProduced',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 18,
+                                    ),
                                   ),
-                                  Text(e['given']),
+                                  Text(
+                                    e['production'],
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'Sold',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  Text(
+                                    e['sold'],
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'Contract',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  Text(
+                                    e['contract'],
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'Remain',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  Text(
+                                    e['remain'],
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 18,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
