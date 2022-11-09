@@ -17,8 +17,13 @@ class CustomDrawerHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const FlutterLogo(size: 30),
-          if (isColapsed) const SizedBox(width: 10),
+          CircleAvatar(
+            child: Image.asset(
+              'images/logo.jpg',
+              width: 60,
+            ),
+            radius: isColapsed ? 40 : 20,
+          ),
           if (isColapsed)
             const Expanded(
               flex: 3,
@@ -33,17 +38,6 @@ class CustomDrawerHeader extends StatelessWidget {
               ),
             ),
           if (isColapsed) const Spacer(),
-          if (isColapsed)
-            Expanded(
-              flex: 1,
-              child: IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
-              ),
-            ),
         ],
       ),
     );

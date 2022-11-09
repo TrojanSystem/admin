@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'bottom_user_info.dart';
-import 'custom_list_tile.dart';
 import 'header.dart';
 
 class CustomDrawer extends StatefulWidget {
@@ -36,52 +35,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CustomDrawerHeader(isColapsed: _isCollapsed),
-              const Divider(
-                color: Colors.grey,
-              ),
-              CustomListTile(
-                isCollapsed: _isCollapsed,
-                icon: Icons.home_outlined,
-                title: 'Home',
-                infoCount: 0,
-              ),
-              CustomListTile(
-                isCollapsed: _isCollapsed,
-                icon: Icons.calendar_today,
-                title: 'Calender',
-                infoCount: 0,
-              ),
-              CustomListTile(
-                isCollapsed: _isCollapsed,
-                icon: Icons.pin_drop,
-                title: 'Destinations',
-                infoCount: 0,
-                doHaveMoreOptions: Icons.arrow_forward_ios,
-              ),
-              CustomListTile(
-                isCollapsed: _isCollapsed,
-                icon: Icons.message_rounded,
-                title: 'Messages',
-                infoCount: 8,
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              const Divider(color: Colors.grey),
-              const Spacer(),
-              CustomListTile(
-                isCollapsed: _isCollapsed,
-                icon: Icons.notifications,
-                title: 'Notifications',
-                infoCount: 2,
-              ),
-              CustomListTile(
-                isCollapsed: _isCollapsed,
-                icon: Icons.settings,
-                title: 'Settings',
-                infoCount: 0,
-              ),
-              const SizedBox(height: 10),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.6),
               BottomUserInfo(isCollapsed: _isCollapsed),
               Align(
                 alignment: _isCollapsed
