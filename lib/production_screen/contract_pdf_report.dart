@@ -17,7 +17,7 @@ class ContractPDFReport {
 class FileHandlerForContract extends ChangeNotifier {
   //final helper = DatabaseHelper.instance;
 
-  List<ContractPDFReport> fileList = [];
+  List fileList = [];
 
   // void initializeOptions(List<dynamic> fileList) {
   //   this.fileList = fileList;

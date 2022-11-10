@@ -119,7 +119,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                   (e) => ContractPDFReport(
                     name: e['name'],
                     quantity: e['quantity'],
-                    price: e['price'],
+                    price: totPriceDabo.toString(),
                     date: DateFormat.yMMMEd().format(
                       DateTime.parse(e['date']),
                     ),
