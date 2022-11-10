@@ -14,6 +14,8 @@ import '../dataHub/data/data_storage.dart';
 import '../profit_analysis/profit_analysis_screen.dart';
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({Key key}) : super(key: key);
+
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
@@ -67,8 +69,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               );
             }
-            final expense =
-                Provider.of<DataProvider>(context, listen: false).expenseList;
+            final expense = Provider.of<DataProvider>(context).expenseList;
 
             final result = expense
                 .where((element) =>
@@ -86,20 +87,13 @@ class _MainScreenState extends State<MainScreen> {
                     DateTime.parse(element['itemDate']).day ==
                     selectedDayOfMonth)
                 .toList();
-            var totalExpenses = result.map((e) => e['itemPrice']).toList();
-            var totalExpensesQuantity =
-                result.map((e) => e['itemQuantity']).toList();
-            var totExpenseSum = 0.0;
-            for (int xx = 0; xx < totalExpenses.length; xx++) {
-              totExpenseSum += (double.parse(totalExpenses[xx]) *
-                  double.parse(totalExpensesQuantity[xx]));
-            }
+
             var totalMonthlyExpenses =
                 dailyExpense.map((e) => e['itemPrice']).toList();
+
             var totalMonthlyExpensesQuantity =
                 dailyExpense.map((e) => e['itemQuantity']).toList();
-            final dailyExpensesAdmin =
-                Provider.of<DataProvider>(context).dailyExpense;
+
             var totMonthlyExpenseSum = 0.0;
             for (int xx = 0; xx < totalMonthlyExpenses.length; xx++) {
               totMonthlyExpenseSum += (double.parse(totalMonthlyExpenses[xx]) *

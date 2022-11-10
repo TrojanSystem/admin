@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../dataHub/data/production_data_hub.dart';
 import '../data_provider.dart';
 import '../drop_down_menu_button.dart';
 import 'contract_list.dart';
@@ -40,6 +41,29 @@ class _ProductionPageState extends State<ProductionPage> {
               );
             }
             final dailyProductionData = snapShot.data.docs;
+            final yearFilter =
+                Provider.of<ProductionModelData>(context).contractList;
+            final monthFilterList = yearFilter
+                .where((element) =>
+                    DateTime.parse(element['date']).year == DateTime.now().year)
+                .toList();
+            var monthFilteredContractList = monthFilterList
+                .where((element) =>
+                    DateTime.parse(element['date']).month ==
+                    DateTime.now().month)
+                .toList();
+            var todayFilteredContractList = monthFilteredContractList
+                .where((element) =>
+                    DateTime.parse(element['date']).day == DateTime.now().day)
+                .toList();
+            var totalContractGivenQuantity =
+                todayFilteredContractList.map((e) => e['quantity']).toList();
+            int totContractGivenQuantity = 0;
+            for (int xx = 0; xx < totalContractGivenQuantity.length; xx++) {
+              totContractGivenQuantity +=
+                  int.parse(totalContractGivenQuantity[xx]);
+            }
+
 /***
  *
  *
@@ -362,7 +386,8 @@ class _ProductionPageState extends State<ProductionPage> {
             final listOfPriceForAdmin = [
               {
                 'image': 'images/bale_5.png',
-                'sold': '$totalEmployeeSoldSumBale_5',
+                'sold':
+                    '${totalEmployeeSoldSumBale_5 + totContractGivenQuantity}',
                 'produced': '$totalEmployeeSoldSumBale_5ForAdmin',
               },
               {

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../constants.dart';
+import '../dataHub/data/expenses_data.dart';
 import '../dataHub/data/production_data_hub.dart';
 
 class ProfitAnalaysisScreen extends StatefulWidget {
@@ -23,12 +24,14 @@ class _ProfitAnalaysisScreenState extends State<ProfitAnalaysisScreen> {
   @override
   Widget build(BuildContext context) {
     Provider.of<DataStorage>(context).currentYear = currentYear;
-    final summaryDataExpense = Provider.of<DataProvider>(context).expenseList;
+    final summaryDataExpense = Provider.of<ExpensesData>(context).expenseList;
     final filterByYearExpense = summaryDataExpense
         .where((element) =>
             DateTime.parse(element['itemDate']).year == currentYear)
         .toList();
+
     var totalExpenses = filterByYearExpense.map((e) => e['itemPrice']).toList();
+
     var totalQuantity =
         filterByYearExpense.map((e) => e['itemQuantity']).toList();
 
@@ -59,6 +62,7 @@ class _ProfitAnalaysisScreenState extends State<ProfitAnalaysisScreen> {
     final filterByYearContrat = summaryContratData
         .where((element) => DateTime.parse(element['date']).year == currentYear)
         .toList();
+
     var totalContratGivenPrice =
         filterByYearContrat.map((e) => e['price']).toList();
     var totalContratGivenQuantity =

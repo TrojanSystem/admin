@@ -279,10 +279,10 @@ class _AddExpenseState extends State<AddExpense> {
               height: 30,
             ),
             GestureDetector(
-              onTap: () {
+              onTap: () async {
                 if (formKey.currentState.validate()) {
                   formKey.currentState.save();
-                  FirebaseFirestore.instance
+                  await FirebaseFirestore.instance
                       .collection('EmployeeExpenses')
                       .add({
                     'expenseType': 'admin',

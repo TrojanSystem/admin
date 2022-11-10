@@ -1,9 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 class ExpensesData extends ChangeNotifier {
   var totDailySum = 0.0;
   double totalPrice = 0;
+  final List<Map<String, dynamic>> expenseList = [];
   double totalIncomePrice = 0;
+  void loadExpenseList() async {
+    notifyListeners();
+    await for (var y in FirebaseFirestore.instance
+        .collection('EmployeeExpenses')
+        .snapshots()) {
+      for (var snapSell in y.docs) {
+        expenseList.add(snapSell.data());
+        notifyListeners();
+      }
+    }
+    notifyListeners();
+  }
 
   List daysOfMonth = [
     {

@@ -70,8 +70,8 @@ class DataProvider extends ChangeNotifier {
         .collection('EmployeeExpenses')
         .snapshots()) {
       for (var snapSell in y.docs) {
-        notifyListeners();
         expenseList.add(snapSell.data());
+        notifyListeners();
       }
     }
     notifyListeners();

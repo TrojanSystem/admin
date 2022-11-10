@@ -1,4 +1,5 @@
 import 'package:ada_bread/crediential/login_screen.dart';
+import 'package:ada_bread/dataHub/data/expenses_data.dart';
 import 'package:ada_bread/data_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -36,11 +37,14 @@ class _AdaBreadState extends State<AdaBread> {
           create: (BuildContext context) => DataStorage(),
         ),
         ChangeNotifierProvider(
+          create: (BuildContext context) => ExpensesData()..loadExpenseList(),
+        ),
+        ChangeNotifierProvider(
           create: (BuildContext context) => DataProvider()
             ..loadSoldList()
+            ..loadExpenseList()
             ..loadLoggedUser()
-            ..loadProductionList()
-            ..loadExpenseList(),
+            ..loadProductionList(),
         ),
         ChangeNotifierProvider(
           create: (BuildContext context) => FileHandlerForExpense(),
