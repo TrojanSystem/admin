@@ -5,25 +5,25 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
-class DailyExpensePDFReport {
+class ContractPDFReport {
   String name;
-  String description;
+  String quantity;
   String date;
   String price;
 
-  DailyExpensePDFReport({this.date, this.description, this.price, this.name});
+  ContractPDFReport({this.date, this.quantity, this.price, this.name});
 }
 
-class FileHandlerForExpense extends ChangeNotifier {
+class FileHandlerForContract extends ChangeNotifier {
   //final helper = DatabaseHelper.instance;
 
-  List<DailyExpensePDFReport> fileList = [];
+  List<ContractPDFReport> fileList = [];
 
   // void initializeOptions(List<dynamic> fileList) {
   //   this.fileList = fileList;
   //   notifyListeners();
   // }
-  void addLabour(DailyExpensePDFReport model) {
+  void addLabour(ContractPDFReport model) {
     fileList.insert(0, model);
     notifyListeners();
   }
@@ -44,10 +44,10 @@ class FileHandlerForExpense extends ChangeNotifier {
     grid.columns.add(count: 4);
 // Add a grid header row.
     final PdfGridRow headerRow = grid.headers.add(1)[0];
-    headerRow.cells[0].value = 'Item Name';
-    headerRow.cells[1].value = 'Item Price';
-    headerRow.cells[2].value = 'Item Quantity';
-    headerRow.cells[3].value = 'Item Date';
+    headerRow.cells[0].value = 'Name';
+    headerRow.cells[1].value = 'Quantity';
+    headerRow.cells[2].value = 'Price';
+    headerRow.cells[3].value = 'Date';
 
 // Set header font.
     headerRow.style.font =
@@ -57,8 +57,8 @@ class FileHandlerForExpense extends ChangeNotifier {
     for (int x = 0; x < fileList.length; x++) {
       PdfGridRow row = grid.rows.add();
       row.cells[0].value = fileList[x].name;
-      row.cells[1].value = fileList[x].price;
-      row.cells[2].value = fileList[x].description;
+      row.cells[1].value = fileList[x].quantity;
+      row.cells[2].value = fileList[x].price;
       row.cells[3].value = fileList[x].date;
     }
 
@@ -70,7 +70,7 @@ class FileHandlerForExpense extends ChangeNotifier {
 // Save the document.
     List<int> bytes = document.save();
     document.dispose();
-    saveAndLaunch(bytes, 'Daily Expense Report.pdf');
+    saveAndLaunch(bytes, 'Daily Contract Report.pdf');
     // File('PDFTable.pdf').writeAsBytes(document.save());
 // Dispose the document.
     document.dispose();

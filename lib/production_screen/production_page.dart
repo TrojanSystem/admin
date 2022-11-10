@@ -414,6 +414,7 @@ class _ProductionPageState extends State<ProductionPage> {
                 totalEmployeeSoldSumBale_5 +
                 totalEmployeeSoldSumBale_10 +
                 totalEmployeeSoldSumSlice);
+
             return Column(
               children: [
                 Expanded(

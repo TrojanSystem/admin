@@ -2,6 +2,7 @@ import 'package:ada_bread/data_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../constants.dart';
@@ -84,7 +85,18 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
               totMonthlyExpenseSum += (double.parse(totalMonthlyExpenses[xx]) *
                   double.parse(totalMonthlyExpensesQuantity[xx]));
             }
-
+            final newLabour = dailyExpense
+                .map((e) => DailyExpensePDFReport(
+                      price: e['itemPrice'],
+                      name: e['itemName'],
+                      description: e['itemQuantity'],
+                      date: DateFormat.yMMMEd().format(
+                        DateTime.parse(e['itemDate']),
+                      ),
+                    ))
+                .toList();
+            Provider.of<FileHandlerForExpense>(context, listen: false)
+                .fileList = newLabour;
             return Column(
               children: [
                 Expanded(

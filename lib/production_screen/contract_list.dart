@@ -1,3 +1,4 @@
+import 'package:ada_bread/production_screen/contract_pdf_report.dart';
 import 'package:ada_bread/production_screen/contrat_input.dart';
 import 'package:ada_bread/production_screen/expense.dart';
 import 'package:ada_bread/production_screen/income.dart';
@@ -113,6 +114,20 @@ class _ItemDetailsState extends State<ItemDetails> {
               totPriceDabo += double.parse(quantityOfBread[x]) *
                   double.parse(priceOfBread[x]);
             }
+            final newDailyContract = todayFilteredContratList
+                .map(
+                  (e) => ContractPDFReport(
+                    name: e['name'],
+                    quantity: e['quantity'],
+                    price: e['price'],
+                    date: DateFormat.yMMMEd().format(
+                      DateTime.parse(e['date']),
+                    ),
+                  ),
+                )
+                .toList();
+            Provider.of<FileHandlerForContract>(context, listen: false)
+                .fileList = newDailyContract;
             return Column(
               children: [
                 Expanded(
@@ -295,7 +310,12 @@ class _ItemDetailsState extends State<ItemDetails> {
               ),
             );
           },
-          button_2: () {},
+          button_2: () {
+            setState(() {
+              Provider.of<FileHandlerForContract>(context, listen: false)
+                  .createTable();
+            });
+          },
           button_3: () {
             Navigator.of(context).push(
               MaterialPageRoute(

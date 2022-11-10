@@ -1098,6 +1098,7 @@ class _MainScreenState extends State<MainScreen> {
           },
           child: Image.asset('images/graphic-progression.png'),
           backgroundColor: Colors.transparent,
+          elevation: 0,
         ),
       ),
       drawer: const CustomDrawer(),

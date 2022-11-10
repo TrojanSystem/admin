@@ -1,4 +1,5 @@
 import 'package:ada_bread/order_screen/dfo_order.dart';
+import 'package:ada_bread/order_screen/order_pdf_report.dart';
 import 'package:ada_bread/order_screen/update_order_received.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -95,6 +96,18 @@ class _OrderScreenState extends State<OrderScreen> {
             for (int x = 0; x < quantityOfBread.length; x++) {
               totOrderedKg += double.parse(quantityOfBread[x]);
             }
+            final newLabour = dailyOrder
+                .map((e) => OrderPDFReport(
+                      name: e['name'],
+                      orderedKilo: e['orderedKilo'],
+                      phoneNumber: e['phoneNumber'],
+                      date: DateFormat.yMMMEd().format(
+                        DateTime.parse(e['date']),
+                      ),
+                    ))
+                .toList();
+            Provider.of<FileHandlerForOrder>(context, listen: false).fileList =
+                newLabour;
             return Column(
               children: [
                 Expanded(
@@ -516,7 +529,12 @@ class _OrderScreenState extends State<OrderScreen> {
               ),
             );
           },
-          button_2: () {},
+          button_2: () {
+            setState(() {
+              Provider.of<FileHandlerForOrder>(context, listen: false)
+                  .createTable();
+            });
+          },
           button_3: () {
             Navigator.of(context).push(
               MaterialPageRoute(
