@@ -618,7 +618,6 @@ class _SellerDetailState extends State<SellerDetail> {
                       totalEmployeeSoldSumSlice);
                   double incomeSummation = (totalSoldItemPrice +
                       totMonthlyContractSum +
-                      totalDailyProducedItemPrice +
                       totMonthlyOrderSum);
 
                   return Padding(

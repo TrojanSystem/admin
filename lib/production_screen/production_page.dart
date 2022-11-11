@@ -444,6 +444,7 @@ class _ProductionPageState extends State<ProductionPage> {
                           /// list will not show all elements
                           setState(() {
                             listOfContractGiven.length;
+                            shopSold.length;
                           });
 
                           // showing snackbar

@@ -167,10 +167,10 @@ class _MainScreenState extends State<MainScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'Daily Expense: $totMonthlyExpenseSumForMainScreen',
-                                    style: dailyIncomeStyle,
-                                  ),
+                                  // Text(
+                                  //   'Daily Income: $totMonthlyExpenseSumForMainScreen',
+                                  //   style: dailyIncomeStyle,
+                                  // ),
                                   const SizedBox(
                                     height: 7,
                                   ),
@@ -597,6 +597,7 @@ class _MainScreenState extends State<MainScreen> {
                                     totalBale_10 +
                                     totalSlice +
                                     totalBombolino);
+
                                 double expectedIncome = (totalBale_5ForAdmin +
                                     totalBale_10ForAdmin +
                                     totalSliceForAdmin +
@@ -811,7 +812,9 @@ class _MainScreenState extends State<MainScreen> {
                                                                                 Colors.green,
                                                                             currentValue: totalSold == 0
                                                                                 ? 0
-                                                                                : (totalSold / expectedIncome) * 100,
+                                                                                : expectedIncome == 0
+                                                                                    ? 0
+                                                                                    : (totalSold / expectedIncome) * 100,
                                                                             displayText:
                                                                                 '%',
                                                                             displayTextStyle:

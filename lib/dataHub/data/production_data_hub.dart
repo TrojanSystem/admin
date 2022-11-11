@@ -9,7 +9,7 @@ class ProductionModelData extends ChangeNotifier {
   int bale_10 = 0;
   int slice = 0;
   int bombolino = 0;
-  bool _isLoading = true;
+  final bool _isLoading = true;
   final List<Map<String, dynamic>> _contractList = [];
 
   List<Map<String, dynamic>> get contractList => _contractList;
