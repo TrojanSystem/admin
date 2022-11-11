@@ -120,22 +120,9 @@ class _MainScreenState extends State<MainScreen> {
                 return Future.delayed(
                   const Duration(seconds: 1),
                   () {
-                    /// adding elements in list after [1 seconds] delay
-                    /// to mimic network call
-                    ///
-                    /// Remember: setState is necessary so that
-                    /// build method will run again otherwise
-                    /// list will not show all elements
                     setState(() {
                       expense.length;
                     });
-
-                    // showing snackbar
-                    // _scaffoldKey.currentState.showSnackBar(
-                    //   SnackBar(
-                    //     content: const Text('Page Refreshed'),
-                    //   ),
-                    // );
                   },
                 );
               },

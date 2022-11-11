@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
     const MainScreen(),
     const ProductionPage(),
     OrderScreen(),
-    ExpenseScreen(),
+    const ExpenseScreen(),
   ];
   @override
   Widget build(BuildContext context) {
