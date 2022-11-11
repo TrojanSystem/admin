@@ -1,3 +1,4 @@
+import 'package:ada_bread/data_provider.dart';
 import 'package:ada_bread/production_screen/contract_pdf_report.dart';
 import 'package:ada_bread/production_screen/contrat_input.dart';
 import 'package:ada_bread/production_screen/expense.dart';
@@ -128,6 +129,8 @@ class _ItemDetailsState extends State<ItemDetails> {
                 .toList();
             Provider.of<FileHandlerForContract>(context, listen: false)
                 .fileList = newDailyContract;
+            Provider.of<DataProvider>(context, listen: false).contractList =
+                todayFilteredContratList;
             return Column(
               children: [
                 Expanded(

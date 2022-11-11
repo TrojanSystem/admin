@@ -1,5 +1,4 @@
 import 'package:ada_bread/crediential/login_screen.dart';
-import 'package:ada_bread/dataHub/data/expenses_data.dart';
 import 'package:ada_bread/data_provider.dart';
 import 'package:ada_bread/order_screen/order_pdf_report.dart';
 import 'package:ada_bread/production_screen/contract_pdf_report.dart';
@@ -39,15 +38,11 @@ class _AdaBreadState extends State<AdaBread> {
           create: (BuildContext context) => DataStorage(),
         ),
         ChangeNotifierProvider(
-          create: (BuildContext context) => ExpensesData()..loadExpenseList(),
-        ),
-        ChangeNotifierProvider(
-          create: (BuildContext context) => DataProvider()
-            ..loadSoldList()
-            ..loadExpenseList()
-            ..loadLoggedUser()
-            ..loadProductionList(),
-        ),
+            create: (BuildContext context) => DataProvider()
+              //..loadSoldList()
+              ..loadLoggedUser()
+            //..loadProductionList(),
+            ),
         ChangeNotifierProvider(
           create: (BuildContext context) => FileHandlerForExpense(),
         ),
@@ -64,9 +59,7 @@ class _AdaBreadState extends State<AdaBread> {
           create: (BuildContext context) => DailyProductionData(),
         ),
         ChangeNotifierProvider(
-          create: (BuildContext context) =>
-              ProductionModelData()..loadContratList(),
-        ),
+            create: (BuildContext context) => ProductionModelData()),
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,

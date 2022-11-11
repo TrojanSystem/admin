@@ -26,29 +26,6 @@ class ProductionModelData extends ChangeNotifier {
 
   List<Map<String, dynamic>> get shopSellData => _shopSellData;
   bool get isLoading => _isLoading;
-  void loadContratList() async {
-    notifyListeners();
-    await for (var x
-        in FirebaseFirestore.instance.collection('ContratGiven').snapshots()) {
-      for (var snap in x.docs) {
-        notifyListeners();
-        _contractList.add(snap.data());
-      }
-    }
-    notifyListeners();
-  }
-
-  void loadDailyShopDataList() async {
-    notifyListeners();
-    await for (var x
-        in FirebaseFirestore.instance.collection('DailyShopSell').snapshots()) {
-      for (var snap in x.docs) {
-        notifyListeners();
-        _shopSellData.add(snap.data());
-      }
-    }
-    notifyListeners();
-  }
 
   void loadOrderList() async {
     notifyListeners();
@@ -62,46 +39,10 @@ class ProductionModelData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void loadDailyProductionList() async {
-    notifyListeners();
-    await for (var x
-        in FirebaseFirestore.instance.collection('DailySell').snapshots()) {
-      for (var snap in x.docs) {
-        notifyListeners();
-        _dailyProduction.add(snap.data());
-      }
-    }
-    notifyListeners();
-  }
-
-  void loadExpenseList() async {
-    notifyListeners();
-    await for (var x in FirebaseFirestore.instance
-        .collection('EmployeeExpenses')
-        .snapshots()) {
-      for (var snap in x.docs) {
-        notifyListeners();
-        _expense.add(snap.data());
-      }
-    }
-    notifyListeners();
-  }
   //
   // bool get isLoading => _isLoading;
   //
-  // Future loadContractList() async {
-  //   _isLoading = true;
-  //   notifyListeners();
-  //   _contractList = await contractModelDB.getTasks();
-  //   _isLoading = false;
-  //   notifyListeners();
-  // }
-  //
-  // Future addContractList(ContractModel task) async {
-  //   await contractModelDB.insertTask(task);
-  //   await loadContractList();
-  //   notifyListeners();
-  // }
+
   //
   // Future updateContractList(ContractModel task) async {
   //   await contractModelDB.updateTaskList(task);

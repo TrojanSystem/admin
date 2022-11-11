@@ -22,6 +22,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int selectedDayOfMonth = DateTime.now().day;
+  List expense = [];
   bool isTapped = true;
   int columnCount = 2;
   double totalSold = 0;
@@ -34,6 +35,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     totalSold;
     totalExpected;
+    expense;
     super.initState();
   }
 
@@ -69,8 +71,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               );
             }
-            final expense = Provider.of<DataProvider>(context).expenseList;
-
+            expense = Provider.of<DataProvider>(context).expenseList;
             final result = expense
                 .where((element) =>
                     DateTime.parse(element['itemDate']).year ==
@@ -82,22 +83,27 @@ class _MainScreenState extends State<MainScreen> {
                     DateTime.parse(element['itemDate']).month ==
                     DateTime.now().month)
                 .toList();
-            var dailyExpense = todayMonthFilteredList
+            var dailyExpenseForMainScreen = todayMonthFilteredList
                 .where((element) =>
                     DateTime.parse(element['itemDate']).day ==
                     selectedDayOfMonth)
                 .toList();
 
-            var totalMonthlyExpenses =
-                dailyExpense.map((e) => e['itemPrice']).toList();
+            var totalMonthlyExpensesForMainScreen =
+                dailyExpenseForMainScreen.map((e) => e['itemPrice']).toList();
 
-            var totalMonthlyExpensesQuantity =
-                dailyExpense.map((e) => e['itemQuantity']).toList();
+            var totalMonthlyExpensesQuantityForMainScreen =
+                dailyExpenseForMainScreen
+                    .map((e) => e['itemQuantity'])
+                    .toList();
 
-            var totMonthlyExpenseSum = 0.0;
-            for (int xx = 0; xx < totalMonthlyExpenses.length; xx++) {
-              totMonthlyExpenseSum += (double.parse(totalMonthlyExpenses[xx]) *
-                  double.parse(totalMonthlyExpensesQuantity[xx]));
+            var totMonthlyExpenseSumForMainScreen = 0.0;
+            for (int xx = 0;
+                xx < totalMonthlyExpensesForMainScreen.length;
+                xx++) {
+              totMonthlyExpenseSumForMainScreen += (double.parse(
+                      totalMonthlyExpensesForMainScreen[xx]) *
+                  double.parse(totalMonthlyExpensesQuantityForMainScreen[xx]));
             }
             final productionData = snap.data.docs;
             final loggedInEmployee =
@@ -107,956 +113,728 @@ class _MainScreenState extends State<MainScreen> {
                     DateTime.parse(element['loggedDate']).day ==
                     selectedDayOfMonth)
                 .toList();
+            Provider.of<DataProvider>(context).databaseDataForShop =
+                productionData;
+            return RefreshIndicator(
+              onRefresh: () {
+                return Future.delayed(
+                  const Duration(seconds: 1),
+                  () {
+                    /// adding elements in list after [1 seconds] delay
+                    /// to mimic network call
+                    ///
+                    /// Remember: setState is necessary so that
+                    /// build method will run again otherwise
+                    /// list will not show all elements
+                    setState(() {
+                      expense.length;
+                    });
 
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 0.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: DropdownButton(
-                              dropdownColor: Colors.grey[850],
-                              iconEnabledColor: Colors.white,
-                              menuMaxHeight: 300,
-                              value: selectedDayOfMonth,
-                              items: daySelected
-                                  .map(
-                                    (e) => DropdownMenuItem(
-                                      child: Text(
-                                        e['mon'],
-                                        style: kkDropDown,
-                                      ),
-                                      value: e['day'],
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedDayOfMonth = value as int;
-                                });
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Daily Expense: $totMonthlyExpenseSum',
-                                  style: dailyIncomeStyle,
-                                ),
-                                const SizedBox(
-                                  height: 7,
-                                ),
-                                Text(
-                                  'Daily Income: $totalSold',
-                                  style: dailyIncomeStyle,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    color: const Color.fromRGBO(3, 83, 151, 1),
-                  ),
-                ),
-                Expanded(
-                  flex: 9,
-                  child: AnimationLimiter(
-                    child: shopSold.isEmpty
-                        ? Center(
-                            child: Image.asset(
-                              'images/closed-sign.png',
-                              width: 150,
-                            ),
-                          )
-                        : ListView.builder(
-                            padding: EdgeInsets.all(_w / 30),
-                            physics: const BouncingScrollPhysics(
-                                parent: AlwaysScrollableScrollPhysics()),
-                            itemCount: shopSold.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              final itemTypeForAdmin = productionData
-                                  .where(
-                                      (element) => element['isWhat'] == 'given')
-                                  .toList();
-                              final whoIsForAdmin = itemTypeForAdmin
-                                  .where((element) =>
-                                      element['seller'] ==
-                                      shopSold[index]['userEmail'])
-                                  .toList();
-                              final employeeSoldYearFilterForAdmin =
-                                  whoIsForAdmin
-                                      .where((element) =>
-                                          DateTime.parse(element['givenDate'])
-                                              .year ==
-                                          DateTime.now().year)
-                                      .toList();
-
-                              var employeeSoldMonthFilterForAdmin =
-                                  employeeSoldYearFilterForAdmin
-                                      .where((element) =>
-                                          DateTime.parse(element['givenDate'])
-                                              .month ==
-                                          DateTime.now().month)
-                                      .toList();
-                              var employeeSoldDayFilterForAdmin =
-                                  employeeSoldMonthFilterForAdmin
-                                      .where((element) =>
-                                          DateTime.parse(element['givenDate'])
-                                              .day ==
-                                          selectedDayOfMonth)
-                                      .toList();
-
-                              /*
-                    *
-                    *
-                    *
-                    *
-                    * */
-
-                              /*
-
-
-                      BALE 5 ForAdmin
-                    *
-                    *
-                    *
-                    * */
-                              var totalEmployeeSoldBale_5ForAdmin =
-                                  employeeSoldDayFilterForAdmin
-                                      .map((e) => e['bale_5'])
-                                      .toList();
-
-                              var totalEmployeeSoldSumBale_5ForAdmin = 0;
-                              for (int xx = 0;
-                                  xx < totalEmployeeSoldBale_5ForAdmin.length;
-                                  xx++) {
-                                totalEmployeeSoldSumBale_5ForAdmin += int.parse(
-                                    totalEmployeeSoldBale_5ForAdmin[xx]);
-                              }
-
-                              /*
-
-
-                      BALE 10 ForAdmin
-                    *
-                    *
-                    *
-                    * */
-                              var totalEmployeeSoldBale_10ForAdmin =
-                                  employeeSoldDayFilterForAdmin
-                                      .map((e) => e['bale_10'])
-                                      .toList();
-
-                              var totalEmployeeSoldSumBale_10ForAdmin = 0;
-                              for (int xx = 0;
-                                  xx < totalEmployeeSoldBale_10ForAdmin.length;
-                                  xx++) {
-                                totalEmployeeSoldSumBale_10ForAdmin +=
-                                    int.parse(
-                                        totalEmployeeSoldBale_10ForAdmin[xx]);
-                              }
-                              /*
-
-
-                       SLICE ForAdmin
-                    *
-                    *
-                    *
-                    * */
-                              var totalEmployeeSoldSliceForAdmin =
-                                  employeeSoldDayFilterForAdmin
-                                      .map((e) => e['slice'])
-                                      .toList();
-
-                              var totalEmployeeSoldSumSliceForAdmin = 0;
-                              for (int xx = 0;
-                                  xx < totalEmployeeSoldSliceForAdmin.length;
-                                  xx++) {
-                                totalEmployeeSoldSumSliceForAdmin += int.parse(
-                                    totalEmployeeSoldSliceForAdmin[xx]);
-                              }
-                              /*
-
-
-                     BOMBOLINO ForAdmin
-                    *
-                    *
-                    *
-                    * */
-                              var totalEmployeeSoldBombolinoForAdmin =
-                                  employeeSoldDayFilterForAdmin
-                                      .map((e) => e['bombolino'])
-                                      .toList();
-
-                              var totalEmployeeSoldSumBombolinoForAdmin = 0;
-                              for (int xx = 0;
-                                  xx <
-                                      totalEmployeeSoldBombolinoForAdmin.length;
-                                  xx++) {
-                                totalEmployeeSoldSumBombolinoForAdmin +=
-                                    int.parse(
-                                        totalEmployeeSoldBombolinoForAdmin[xx]);
-                              }
-
-                              /*
-                    *
-                    * TOTAL EXPECTED INCOME BALE_5
-                    *
-                    *
-                    * */
-                              final double totalBale_5ForAdmin =
-                                  totalEmployeeSoldSumBale_5ForAdmin *
-                                      (employeeSoldDayFilterForAdmin.isEmpty
-                                          ? 0.0
-                                          : double.parse(
-                                              employeeSoldDayFilterForAdmin
-                                                  .last['bale_5_Sp']));
-                              /*
-                    *
-                    * TOTAL EXPECTED INCOME BALE_10
-                    *
-                    *
-                    * */
-                              final double totalBale_10ForAdmin =
-                                  totalEmployeeSoldSumBale_10ForAdmin *
-                                      (employeeSoldDayFilterForAdmin.isEmpty
-                                          ? 0.0
-                                          : double.parse(
-                                              employeeSoldDayFilterForAdmin
-                                                  .last['bale_10_Sp']));
-                              /*
-                    *
-                    * TOTAL EXPECTED INCOME SLICE
-                    *
-                    *
-                    * */
-                              final double totalSliceForAdmin =
-                                  totalEmployeeSoldSumSliceForAdmin *
-                                      (employeeSoldDayFilterForAdmin.isEmpty
-                                          ? 0.0
-                                          : double.parse(
-                                              employeeSoldDayFilterForAdmin
-                                                  .last['slice_Sp']));
-                              /*
-                    *
-                    * TOTAL EXPECTED INCOME BOMBOLINO
-                    *
-                    *
-                    * */
-                              final double totalBombolinoForAdmin =
-                                  totalEmployeeSoldSumBombolinoForAdmin *
-                                      (employeeSoldDayFilterForAdmin.isEmpty
-                                          ? 0.0
-                                          : double.parse(
-                                              employeeSoldDayFilterForAdmin
-                                                  .last['bombolino_Sp']));
-
-                              /*
-                    *
-                    * SOLD ITEM
-                    *
-                    *
-                    * */
-                              final itemType = productionData
-                                  .where(
-                                      (element) => element['isWhat'] == 'sold')
-                                  .toList();
-                              final whoIs = itemType
-                                  .where((element) =>
-                                      element['employeeEmail'] ==
-                                      shopSold[index]['userEmail'])
-                                  .toList();
-                              final employeeSoldYearFilter = whoIs
-                                  .where((element) =>
-                                      DateTime.parse(element['date']).year ==
-                                      DateTime.now().year)
-                                  .toList();
-
-                              var employeeSoldMonthFilter =
-                                  employeeSoldYearFilter
-                                      .where((element) =>
-                                          DateTime.parse(element['date'])
-                                              .month ==
-                                          DateTime.now().month)
-                                      .toList();
-                              var employeeSoldDayFilter =
-                                  employeeSoldMonthFilter
-                                      .where((element) =>
-                                          DateTime.parse(element['date']).day ==
-                                          selectedDayOfMonth)
-                                      .toList();
-                              /*
-
-
-                      BALE 5
-                    *
-                    *
-                    *
-                    * */
-                              var totalEmployeeSoldBale_5 =
-                                  employeeSoldDayFilter
-                                      .map((e) => e['bale_5'])
-                                      .toList();
-
-                              var totalEmployeeSoldSumBale_5 = 0;
-                              for (int xx = 0;
-                                  xx < totalEmployeeSoldBale_5.length;
-                                  xx++) {
-                                totalEmployeeSoldSumBale_5 +=
-                                    int.parse(totalEmployeeSoldBale_5[xx]);
-                              }
-
-                              /*
-
-
-                      BALE 10
-                    *
-                    *
-                    *
-                    * */
-                              var totalEmployeeSoldBale_10 =
-                                  employeeSoldDayFilter
-                                      .map((e) => e['bale_10'])
-                                      .toList();
-
-                              var totalEmployeeSoldSumBale_10 = 0;
-                              for (int xx = 0;
-                                  xx < totalEmployeeSoldBale_10.length;
-                                  xx++) {
-                                totalEmployeeSoldSumBale_10 +=
-                                    int.parse(totalEmployeeSoldBale_10[xx]);
-                              }
-                              /*
-
-
-                       SLICE
-                    *
-                    *
-                    *
-                    * */
-                              var totalEmployeeSoldSlice = employeeSoldDayFilter
-                                  .map((e) => e['slice'])
-                                  .toList();
-
-                              var totalEmployeeSoldSumSlice = 0;
-                              for (int xx = 0;
-                                  xx < totalEmployeeSoldSlice.length;
-                                  xx++) {
-                                totalEmployeeSoldSumSlice +=
-                                    int.parse(totalEmployeeSoldSlice[xx]);
-                              }
-                              /*
-
-
-                     BOMBOLINO
-                    *
-                    *
-                    *
-                    * */
-                              var totalEmployeeSoldBombolino =
-                                  employeeSoldDayFilter
-                                      .map((e) => e['bombolino'])
-                                      .toList();
-
-                              var totalEmployeeSoldSumBombolino = 0;
-                              for (int xx = 0;
-                                  xx < totalEmployeeSoldBombolino.length;
-                                  xx++) {
-                                totalEmployeeSoldSumBombolino +=
-                                    int.parse(totalEmployeeSoldBombolino[xx]);
-                              }
-                              /*
-                    *
-                    * TOTAL INCOME BALE_5
-                    *
-                    *
-                    * */
-                              final double totalBale_5 =
-                                  totalEmployeeSoldSumBale_5 *
-                                      (employeeSoldDayFilter.isEmpty
-                                          ? 0.0
-                                          : double.parse(employeeSoldDayFilter
-                                              .last['bale_5_Sp']));
-                              /*
-                    *
-                    * TOTAL INCOME BALE_10
-                    *
-                    *
-                    * */
-                              final double totalBale_10 =
-                                  totalEmployeeSoldSumBale_10 *
-                                      (employeeSoldDayFilter.isEmpty
-                                          ? 0.0
-                                          : double.parse(employeeSoldDayFilter
-                                              .last['bale_10_Sp']));
-                              /*
-                    *
-                    * TOTAL INCOME SLICE
-                    *
-                    *
-                    * */
-                              final double totalSlice =
-                                  totalEmployeeSoldSumSlice *
-                                      (employeeSoldDayFilter.isEmpty
-                                          ? 0.0
-                                          : double.parse(employeeSoldDayFilter
-                                              .last['slice_Sp']));
-                              /*
-                    *
-                    * TOTAL INCOME BOMBOLINO
-                    *
-                    *
-                    * */
-                              final double totalBombolino =
-                                  totalEmployeeSoldSumBombolino *
-                                      (employeeSoldDayFilter.isEmpty
-                                          ? 0.0
-                                          : double.parse(employeeSoldDayFilter
-                                              .last['bombolino_Sp']));
-
-                              /*
-                    *
-                    *
-                    *
-                    * Sum of ALL SOLD ITEMS
-                    *
-                    *
-                    *
-                    *
-                    * */
-                              final listOfPriceForAdmin = [
-                                {
-                                  'image': 'images/bale_5.png',
-                                  'sold': '$totalEmployeeSoldSumBale_5',
-                                  'given':
-                                      '$totalEmployeeSoldSumBale_5ForAdmin',
-                                },
-                                {
-                                  'image': 'images/bale_10.png',
-                                  'sold': '$totalEmployeeSoldSumBale_10',
-                                  'given':
-                                      '$totalEmployeeSoldSumBale_10ForAdmin',
-                                },
-                                {
-                                  'image': 'images/slice.png',
-                                  'sold': '$totalEmployeeSoldSumSlice',
-                                  'given': '$totalEmployeeSoldSumSliceForAdmin',
-                                },
-                                {
-                                  'image': 'images/donut.png',
-                                  'sold': '$totalEmployeeSoldSumBombolino',
-                                  'given':
-                                      '$totalEmployeeSoldSumBombolinoForAdmin',
-                                }
-                              ];
-                              Provider.of<DailyProductionData>(context)
-                                  .totalSoldData(
-                                      totalEmployeeSoldSumBale_5.toString(),
-                                      totalEmployeeSoldSumBale_10.toString(),
-                                      totalEmployeeSoldSumSlice.toString(),
-                                      totalEmployeeSoldSumBombolino.toString());
-                              totalSold = (totalBale_5 +
-                                  totalBale_10 +
-                                  totalSlice +
-                                  totalBombolino);
-                              double expectedIncome = (totalBale_5ForAdmin +
-                                  totalBale_10ForAdmin +
-                                  totalSliceForAdmin +
-                                  totalBombolinoForAdmin);
-
-                              int sumOfSoldItem = (totalEmployeeSoldSumBale_5 +
-                                  totalEmployeeSoldSumBale_10 +
-                                  totalEmployeeSoldSumSlice +
-                                  totalEmployeeSoldSumBombolino);
-                              int sumOfGivenItems =
-                                  (totalEmployeeSoldSumBale_5ForAdmin +
-                                      totalEmployeeSoldSumBale_10ForAdmin +
-                                      totalEmployeeSoldSumSliceForAdmin +
-                                      totalEmployeeSoldSumBombolinoForAdmin);
-                              Provider.of<DataProvider>(context).binders(
-                                  sumOfSoldItem.toString(),
-                                  sumOfGivenItems.toString());
-                              Provider.of<DataProvider>(context).totalIncome(
-                                  totalSold.toString(),
-                                  expectedIncome.toString());
-                              return AnimationConfiguration.staggeredList(
-                                position: index,
-                                delay: const Duration(milliseconds: 100),
-                                child: SlideAnimation(
-                                  duration: const Duration(milliseconds: 2500),
-                                  curve: Curves.fastLinearToSlowEaseIn,
-                                  horizontalOffset: -300,
-                                  verticalOffset: -850,
-                                  child: InkWell(
-                                    highlightColor: Colors.transparent,
-                                    splashColor: Colors.transparent,
-                                    onDoubleTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (ctx) =>
-                                              ProductDeliveredToShopInput(
-                                            loggedUser: shopSold[index]
-                                                ['userEmail'],
-                                          ),
+                    // showing snackbar
+                    // _scaffoldKey.currentState.showSnackBar(
+                    //   SnackBar(
+                    //     content: const Text('Page Refreshed'),
+                    //   ),
+                    // );
+                  },
+                );
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 0.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: DropdownButton(
+                                dropdownColor: Colors.grey[850],
+                                iconEnabledColor: Colors.white,
+                                menuMaxHeight: 300,
+                                value: selectedDayOfMonth,
+                                items: daySelected
+                                    .map(
+                                      (e) => DropdownMenuItem(
+                                        child: Text(
+                                          e['mon'],
+                                          style: kkDropDown,
                                         ),
-                                      );
-                                    },
-                                    onTap: () {
-                                      setState(() {
-                                        isTapped = !isTapped;
-                                      });
-                                    },
-                                    onHighlightChanged: (value) {
-                                      setState(() {
-                                        isExpanded = value;
-                                      });
-                                    },
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: AnimatedContainer(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0, right: 8),
-                                            margin: const EdgeInsets.only(
-                                                left: 8.0, right: 8, top: 10),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  const Color.fromRGBO(
-                                                      40, 53, 147, 1),
-                                                  const Color.fromRGBO(
-                                                          40, 53, 147, 1)
-                                                      .withOpacity(0.9)
+                                        value: e['day'],
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedDayOfMonth = value as int;
+                                  });
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Daily Expense: $totMonthlyExpenseSumForMainScreen',
+                                    style: dailyIncomeStyle,
+                                  ),
+                                  const SizedBox(
+                                    height: 7,
+                                  ),
+                                  Text(
+                                    'Daily Income: $totalSold',
+                                    style: dailyIncomeStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      color: const Color.fromRGBO(3, 83, 151, 1),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 9,
+                    child: AnimationLimiter(
+                      child: shopSold.isEmpty
+                          ? Center(
+                              child: Image.asset(
+                                'images/closed-sign.png',
+                                width: 150,
+                              ),
+                            )
+                          : ListView.builder(
+                              padding: EdgeInsets.all(_w / 30),
+                              physics: const BouncingScrollPhysics(
+                                  parent: AlwaysScrollableScrollPhysics()),
+                              itemCount: shopSold.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final itemTypeForAdmin = productionData
+                                    .where((element) =>
+                                        element['isWhat'] == 'given')
+                                    .toList();
+                                final whoIsForAdmin = itemTypeForAdmin
+                                    .where((element) =>
+                                        element['seller'] ==
+                                        shopSold[index]['userEmail'])
+                                    .toList();
+                                final employeeSoldYearFilterForAdmin =
+                                    whoIsForAdmin
+                                        .where((element) =>
+                                            DateTime.parse(element['givenDate'])
+                                                .year ==
+                                            DateTime.now().year)
+                                        .toList();
+
+                                var employeeSoldMonthFilterForAdmin =
+                                    employeeSoldYearFilterForAdmin
+                                        .where((element) =>
+                                            DateTime.parse(element['givenDate'])
+                                                .month ==
+                                            DateTime.now().month)
+                                        .toList();
+                                var employeeSoldDayFilterForAdmin =
+                                    employeeSoldMonthFilterForAdmin
+                                        .where((element) =>
+                                            DateTime.parse(element['givenDate'])
+                                                .day ==
+                                            selectedDayOfMonth)
+                                        .toList();
+
+                                /*
+                      *
+                      *
+                      *
+                      *
+                      * */
+
+                                /*
+
+
+                        BALE 5 ForAdmin
+                      *
+                      *
+                      *
+                      * */
+                                var totalEmployeeSoldBale_5ForAdmin =
+                                    employeeSoldDayFilterForAdmin
+                                        .map((e) => e['bale_5'])
+                                        .toList();
+
+                                var totalEmployeeSoldSumBale_5ForAdmin = 0;
+                                for (int xx = 0;
+                                    xx < totalEmployeeSoldBale_5ForAdmin.length;
+                                    xx++) {
+                                  totalEmployeeSoldSumBale_5ForAdmin +=
+                                      int.parse(
+                                          totalEmployeeSoldBale_5ForAdmin[xx]);
+                                }
+
+                                /*
+
+
+                        BALE 10 ForAdmin
+                      *
+                      *
+                      *
+                      * */
+                                var totalEmployeeSoldBale_10ForAdmin =
+                                    employeeSoldDayFilterForAdmin
+                                        .map((e) => e['bale_10'])
+                                        .toList();
+
+                                var totalEmployeeSoldSumBale_10ForAdmin = 0;
+                                for (int xx = 0;
+                                    xx <
+                                        totalEmployeeSoldBale_10ForAdmin.length;
+                                    xx++) {
+                                  totalEmployeeSoldSumBale_10ForAdmin +=
+                                      int.parse(
+                                          totalEmployeeSoldBale_10ForAdmin[xx]);
+                                }
+                                /*
+
+
+                         SLICE ForAdmin
+                      *
+                      *
+                      *
+                      * */
+                                var totalEmployeeSoldSliceForAdmin =
+                                    employeeSoldDayFilterForAdmin
+                                        .map((e) => e['slice'])
+                                        .toList();
+
+                                var totalEmployeeSoldSumSliceForAdmin = 0;
+                                for (int xx = 0;
+                                    xx < totalEmployeeSoldSliceForAdmin.length;
+                                    xx++) {
+                                  totalEmployeeSoldSumSliceForAdmin +=
+                                      int.parse(
+                                          totalEmployeeSoldSliceForAdmin[xx]);
+                                }
+                                /*
+
+
+                       BOMBOLINO ForAdmin
+                      *
+                      *
+                      *
+                      * */
+                                var totalEmployeeSoldBombolinoForAdmin =
+                                    employeeSoldDayFilterForAdmin
+                                        .map((e) => e['bombolino'])
+                                        .toList();
+
+                                var totalEmployeeSoldSumBombolinoForAdmin = 0;
+                                for (int xx = 0;
+                                    xx <
+                                        totalEmployeeSoldBombolinoForAdmin
+                                            .length;
+                                    xx++) {
+                                  totalEmployeeSoldSumBombolinoForAdmin +=
+                                      int.parse(
+                                          totalEmployeeSoldBombolinoForAdmin[
+                                              xx]);
+                                }
+
+                                /*
+                      *
+                      * TOTAL EXPECTED INCOME BALE_5
+                      *
+                      *
+                      * */
+                                final double totalBale_5ForAdmin =
+                                    totalEmployeeSoldSumBale_5ForAdmin *
+                                        (employeeSoldDayFilterForAdmin.isEmpty
+                                            ? 0.0
+                                            : double.parse(
+                                                employeeSoldDayFilterForAdmin
+                                                    .last['bale_5_Sp']));
+                                /*
+                      *
+                      * TOTAL EXPECTED INCOME BALE_10
+                      *
+                      *
+                      * */
+                                final double totalBale_10ForAdmin =
+                                    totalEmployeeSoldSumBale_10ForAdmin *
+                                        (employeeSoldDayFilterForAdmin.isEmpty
+                                            ? 0.0
+                                            : double.parse(
+                                                employeeSoldDayFilterForAdmin
+                                                    .last['bale_10_Sp']));
+                                /*
+                      *
+                      * TOTAL EXPECTED INCOME SLICE
+                      *
+                      *
+                      * */
+                                final double totalSliceForAdmin =
+                                    totalEmployeeSoldSumSliceForAdmin *
+                                        (employeeSoldDayFilterForAdmin.isEmpty
+                                            ? 0.0
+                                            : double.parse(
+                                                employeeSoldDayFilterForAdmin
+                                                    .last['slice_Sp']));
+                                /*
+                      *
+                      * TOTAL EXPECTED INCOME BOMBOLINO
+                      *
+                      *
+                      * */
+                                final double totalBombolinoForAdmin =
+                                    totalEmployeeSoldSumBombolinoForAdmin *
+                                        (employeeSoldDayFilterForAdmin.isEmpty
+                                            ? 0.0
+                                            : double.parse(
+                                                employeeSoldDayFilterForAdmin
+                                                    .last['bombolino_Sp']));
+
+                                /*
+                      *
+                      * SOLD ITEM
+                      *
+                      *
+                      * */
+                                final itemType = productionData
+                                    .where((element) =>
+                                        element['isWhat'] == 'sold')
+                                    .toList();
+                                final whoIs = itemType
+                                    .where((element) =>
+                                        element['employeeEmail'] ==
+                                        shopSold[index]['userEmail'])
+                                    .toList();
+                                final employeeSoldYearFilter = whoIs
+                                    .where((element) =>
+                                        DateTime.parse(element['date']).year ==
+                                        DateTime.now().year)
+                                    .toList();
+
+                                var employeeSoldMonthFilter =
+                                    employeeSoldYearFilter
+                                        .where((element) =>
+                                            DateTime.parse(element['date'])
+                                                .month ==
+                                            DateTime.now().month)
+                                        .toList();
+                                var employeeSoldDayFilter =
+                                    employeeSoldMonthFilter
+                                        .where((element) =>
+                                            DateTime.parse(element['date'])
+                                                .day ==
+                                            selectedDayOfMonth)
+                                        .toList();
+                                /*
+
+
+                        BALE 5
+                      *
+                      *
+                      *
+                      * */
+                                var totalEmployeeSoldBale_5 =
+                                    employeeSoldDayFilter
+                                        .map((e) => e['bale_5'])
+                                        .toList();
+
+                                var totalEmployeeSoldSumBale_5 = 0;
+                                for (int xx = 0;
+                                    xx < totalEmployeeSoldBale_5.length;
+                                    xx++) {
+                                  totalEmployeeSoldSumBale_5 +=
+                                      int.parse(totalEmployeeSoldBale_5[xx]);
+                                }
+
+                                /*
+
+
+                        BALE 10
+                      *
+                      *
+                      *
+                      * */
+                                var totalEmployeeSoldBale_10 =
+                                    employeeSoldDayFilter
+                                        .map((e) => e['bale_10'])
+                                        .toList();
+
+                                var totalEmployeeSoldSumBale_10 = 0;
+                                for (int xx = 0;
+                                    xx < totalEmployeeSoldBale_10.length;
+                                    xx++) {
+                                  totalEmployeeSoldSumBale_10 +=
+                                      int.parse(totalEmployeeSoldBale_10[xx]);
+                                }
+                                /*
+
+
+                         SLICE
+                      *
+                      *
+                      *
+                      * */
+                                var totalEmployeeSoldSlice =
+                                    employeeSoldDayFilter
+                                        .map((e) => e['slice'])
+                                        .toList();
+
+                                var totalEmployeeSoldSumSlice = 0;
+                                for (int xx = 0;
+                                    xx < totalEmployeeSoldSlice.length;
+                                    xx++) {
+                                  totalEmployeeSoldSumSlice +=
+                                      int.parse(totalEmployeeSoldSlice[xx]);
+                                }
+                                /*
+
+
+                       BOMBOLINO
+                      *
+                      *
+                      *
+                      * */
+                                var totalEmployeeSoldBombolino =
+                                    employeeSoldDayFilter
+                                        .map((e) => e['bombolino'])
+                                        .toList();
+
+                                var totalEmployeeSoldSumBombolino = 0;
+                                for (int xx = 0;
+                                    xx < totalEmployeeSoldBombolino.length;
+                                    xx++) {
+                                  totalEmployeeSoldSumBombolino +=
+                                      int.parse(totalEmployeeSoldBombolino[xx]);
+                                }
+                                /*
+                      *
+                      * TOTAL INCOME BALE_5
+                      *
+                      *
+                      * */
+                                final double totalBale_5 =
+                                    totalEmployeeSoldSumBale_5 *
+                                        (employeeSoldDayFilter.isEmpty
+                                            ? 0.0
+                                            : double.parse(employeeSoldDayFilter
+                                                .last['bale_5_Sp']));
+                                /*
+                      *
+                      * TOTAL INCOME BALE_10
+                      *
+                      *
+                      * */
+                                final double totalBale_10 =
+                                    totalEmployeeSoldSumBale_10 *
+                                        (employeeSoldDayFilter.isEmpty
+                                            ? 0.0
+                                            : double.parse(employeeSoldDayFilter
+                                                .last['bale_10_Sp']));
+                                /*
+                      *
+                      * TOTAL INCOME SLICE
+                      *
+                      *
+                      * */
+                                final double totalSlice =
+                                    totalEmployeeSoldSumSlice *
+                                        (employeeSoldDayFilter.isEmpty
+                                            ? 0.0
+                                            : double.parse(employeeSoldDayFilter
+                                                .last['slice_Sp']));
+                                /*
+                      *
+                      * TOTAL INCOME BOMBOLINO
+                      *
+                      *
+                      * */
+                                final double totalBombolino =
+                                    totalEmployeeSoldSumBombolino *
+                                        (employeeSoldDayFilter.isEmpty
+                                            ? 0.0
+                                            : double.parse(employeeSoldDayFilter
+                                                .last['bombolino_Sp']));
+
+                                /*
+                      *
+                      *
+                      *
+                      * Sum of ALL SOLD ITEMS
+                      *
+                      *
+                      *
+                      *
+                      * */
+                                final listOfPriceForAdmin = [
+                                  {
+                                    'image': 'images/bale_5.png',
+                                    'sold': '$totalEmployeeSoldSumBale_5',
+                                    'given':
+                                        '$totalEmployeeSoldSumBale_5ForAdmin',
+                                  },
+                                  {
+                                    'image': 'images/bale_10.png',
+                                    'sold': '$totalEmployeeSoldSumBale_10',
+                                    'given':
+                                        '$totalEmployeeSoldSumBale_10ForAdmin',
+                                  },
+                                  {
+                                    'image': 'images/slice.png',
+                                    'sold': '$totalEmployeeSoldSumSlice',
+                                    'given':
+                                        '$totalEmployeeSoldSumSliceForAdmin',
+                                  },
+                                  {
+                                    'image': 'images/donut.png',
+                                    'sold': '$totalEmployeeSoldSumBombolino',
+                                    'given':
+                                        '$totalEmployeeSoldSumBombolinoForAdmin',
+                                  }
+                                ];
+                                Provider.of<DailyProductionData>(context)
+                                    .totalSoldData(
+                                        totalEmployeeSoldSumBale_5.toString(),
+                                        totalEmployeeSoldSumBale_10.toString(),
+                                        totalEmployeeSoldSumSlice.toString(),
+                                        totalEmployeeSoldSumBombolino
+                                            .toString());
+                                totalSold = (totalBale_5 +
+                                    totalBale_10 +
+                                    totalSlice +
+                                    totalBombolino);
+                                double expectedIncome = (totalBale_5ForAdmin +
+                                    totalBale_10ForAdmin +
+                                    totalSliceForAdmin +
+                                    totalBombolinoForAdmin);
+
+                                int sumOfSoldItem =
+                                    (totalEmployeeSoldSumBale_5 +
+                                        totalEmployeeSoldSumBale_10 +
+                                        totalEmployeeSoldSumSlice +
+                                        totalEmployeeSoldSumBombolino);
+                                int sumOfGivenItems =
+                                    (totalEmployeeSoldSumBale_5ForAdmin +
+                                        totalEmployeeSoldSumBale_10ForAdmin +
+                                        totalEmployeeSoldSumSliceForAdmin +
+                                        totalEmployeeSoldSumBombolinoForAdmin);
+                                Provider.of<DataProvider>(context).binders(
+                                    sumOfSoldItem.toString(),
+                                    sumOfGivenItems.toString());
+                                Provider.of<DataProvider>(context).totalIncome(
+                                    totalSold.toString(),
+                                    expectedIncome.toString());
+                                return AnimationConfiguration.staggeredList(
+                                  position: index,
+                                  delay: const Duration(milliseconds: 100),
+                                  child: SlideAnimation(
+                                    duration:
+                                        const Duration(milliseconds: 2500),
+                                    curve: Curves.fastLinearToSlowEaseIn,
+                                    horizontalOffset: -300,
+                                    verticalOffset: -850,
+                                    child: InkWell(
+                                      highlightColor: Colors.transparent,
+                                      splashColor: Colors.transparent,
+                                      onDoubleTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (ctx) =>
+                                                ProductDeliveredToShopInput(
+                                              loggedUser: shopSold[index]
+                                                  ['userEmail'],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      onTap: () {
+                                        setState(() {
+                                          isTapped = !isTapped;
+                                        });
+                                      },
+                                      onHighlightChanged: (value) {
+                                        setState(() {
+                                          isExpanded = value;
+                                        });
+                                      },
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: AnimatedContainer(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0, right: 8),
+                                              margin: const EdgeInsets.only(
+                                                  left: 8.0, right: 8, top: 10),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    const Color.fromRGBO(
+                                                        40, 53, 147, 1),
+                                                    const Color.fromRGBO(
+                                                            40, 53, 147, 1)
+                                                        .withOpacity(0.9)
+                                                  ],
+                                                ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.5),
+                                                    blurRadius: 4,
+                                                    offset: const Offset(4,
+                                                        8), // changes position of shadow
+                                                  ),
                                                 ],
                                               ),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black
-                                                      .withOpacity(0.5),
-                                                  blurRadius: 4,
-                                                  offset: const Offset(4,
-                                                      8), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            duration:
-                                                const Duration(seconds: 1),
-                                            curve:
-                                                Curves.fastLinearToSlowEaseIn,
-                                            height: isTapped
-                                                ? isExpanded
-                                                    ? 160
-                                                    : 160
-                                                : isExpanded
-                                                    ? 200
-                                                    : 400,
-                                            width: isExpanded ? 345 : 350,
-                                            child: isTapped
-                                                ? Row(
-                                                    children: [
-                                                      Expanded(
-                                                        flex: 1,
-                                                        child: Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  top: 25,
-                                                                  bottom: 25,
-                                                                  left: 5),
-                                                          child: Image.asset(
-                                                              'images/employee.png'),
+                                              duration:
+                                                  const Duration(seconds: 1),
+                                              curve:
+                                                  Curves.fastLinearToSlowEaseIn,
+                                              height: isTapped
+                                                  ? isExpanded
+                                                      ? 160
+                                                      : 160
+                                                  : isExpanded
+                                                      ? 200
+                                                      : 400,
+                                              width: isExpanded ? 345 : 350,
+                                              child: isTapped
+                                                  ? Row(
+                                                      children: [
+                                                        Expanded(
+                                                          flex: 1,
+                                                          child: Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    top: 25,
+                                                                    bottom: 25,
+                                                                    left: 5),
+                                                            child: Image.asset(
+                                                                'images/employee.png'),
+                                                          ),
                                                         ),
-                                                      ),
-                                                      Expanded(
-                                                        flex: 4,
-                                                        child: Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  top: 10,
-                                                                  left: 5),
-                                                          // decoration: BoxDecoration(
-                                                          //   border: Border.all(
-                                                          //     color: Colors.blue,
-                                                          //     width: 2,
-                                                          //   ),
-                                                          // ),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceEvenly,
-                                                            children: [
-                                                              Text(
-                                                                shopSold[index][
-                                                                    'username'],
-                                                                style: const TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w900,
-                                                                    fontSize:
-                                                                        25),
-                                                              ),
-                                                              Column(
-                                                                children: [
-                                                                  Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceBetween,
-                                                                    children: [
-                                                                      const Text(
-                                                                        'Expected : ',
-                                                                        style:
-                                                                            kkSummaryIncomes,
-                                                                      ),
-                                                                      Text(
-                                                                        expectedIncome
-                                                                            .toStringAsFixed(2),
-                                                                        style:
-                                                                            kkSummaryIncomes,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  const SizedBox(
-                                                                    height: 10,
-                                                                  ),
-                                                                  Row(
+                                                        Expanded(
+                                                          flex: 4,
+                                                          child: Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    top: 10,
+                                                                    left: 5),
+                                                            // decoration: BoxDecoration(
+                                                            //   border: Border.all(
+                                                            //     color: Colors.blue,
+                                                            //     width: 2,
+                                                            //   ),
+                                                            // ),
+                                                            child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceEvenly,
+                                                              children: [
+                                                                Text(
+                                                                  shopSold[
+                                                                          index]
+                                                                      [
+                                                                      'username'],
+                                                                  style: const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w900,
+                                                                      fontSize:
+                                                                          25),
+                                                                ),
+                                                                Column(
+                                                                  children: [
+                                                                    Row(
                                                                       mainAxisAlignment:
                                                                           MainAxisAlignment
                                                                               .spaceBetween,
                                                                       children: [
                                                                         const Text(
-                                                                          'Sold Price',
+                                                                          'Expected : ',
                                                                           style:
-                                                                              kkSummaryExpense,
-                                                                        ),
-                                                                        Text(
-                                                                          totalSold
-                                                                              .toStringAsFixed(2),
-                                                                          style:
-                                                                              kkSummaryExpense,
-                                                                        ),
-                                                                      ]),
-                                                                ],
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        8.0),
-                                                                child: SizedBox(
-                                                                  height: 50,
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceEvenly,
-                                                                    children: <
-                                                                        Widget>[
-                                                                      SizedBox(
-                                                                        height:
-                                                                            20,
-                                                                        width:
-                                                                            170,
-                                                                        child:
-                                                                            FAProgressBar(
-                                                                          size:
-                                                                              20,
-                                                                          backgroundColor:
-                                                                              Colors.grey,
-                                                                          progressColor:
-                                                                              Colors.green,
-                                                                          currentValue: totalSold == 0
-                                                                              ? 0
-                                                                              : (totalSold / expectedIncome) * 100,
-                                                                          displayText:
-                                                                              '%',
-                                                                          displayTextStyle:
-                                                                              const TextStyle(
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                            fontSize:
-                                                                                20,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Icon(
-                                                        isTapped
-                                                            ? Icons
-                                                                .keyboard_arrow_down
-                                                            : Icons
-                                                                .keyboard_arrow_up,
-                                                        color: Colors.black,
-                                                        size: 27,
-                                                      ),
-                                                    ],
-                                                  )
-                                                : Column(
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Expanded(
-                                                            flex: 1,
-                                                            child: Image.asset(
-                                                                'images/employee.png'),
-                                                          ),
-                                                          Expanded(
-                                                            flex: 4,
-                                                            child: Container(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      top: 10,
-                                                                      left: 5),
-                                                              // decoration: BoxDecoration(
-                                                              //   border: Border.all(
-                                                              //     color: Colors.blue,
-                                                              //     width: 2,
-                                                              //   ),
-                                                              // ),
-                                                              child: Column(
-                                                                children: [
-                                                                  Padding(
-                                                                    padding:
-                                                                        const EdgeInsets.all(
-                                                                            8.0),
-                                                                    child: Row(
-                                                                      children: [
-                                                                        const Text(
-                                                                          'Expected :',
-                                                                          style:
-                                                                              kkSummaryIncome,
+                                                                              kkSummaryIncomes,
                                                                         ),
                                                                         Text(
                                                                           expectedIncome
                                                                               .toStringAsFixed(2),
                                                                           style:
-                                                                              kkSummaryIncome,
+                                                                              kkSummaryIncomes,
                                                                         ),
                                                                       ],
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceBetween,
-                                                                    ),
-                                                                  ),
-                                                                  Padding(
-                                                                    padding:
-                                                                        const EdgeInsets.all(
-                                                                            8.0),
-                                                                    child: Row(
-                                                                      children: [
-                                                                        const Text(
-                                                                          'Sold Price',
-                                                                          style:
-                                                                              kkSummaryExpense,
-                                                                        ),
-                                                                        Text(
-                                                                            totalSold.toStringAsFixed(
-                                                                                2),
-                                                                            style:
-                                                                                kkSummaryExpense),
-                                                                      ],
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceBetween,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Icon(
-                                                            isTapped
-                                                                ? Icons
-                                                                    .keyboard_arrow_down
-                                                                : Icons
-                                                                    .keyboard_arrow_up,
-                                                            color: Colors.black,
-                                                            size: 27,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child:
-                                                              AnimatedContainer(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 8.0,
-                                                                    right: 8),
-                                                            margin:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 8.0,
-                                                                    right: 8,
-                                                                    top: 10),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                              gradient:
-                                                                  LinearGradient(
-                                                                colors: [
-                                                                  const Color
-                                                                          .fromRGBO(
-                                                                      40,
-                                                                      53,
-                                                                      147,
-                                                                      1),
-                                                                  const Color.fromRGBO(
-                                                                          40,
-                                                                          53,
-                                                                          147,
-                                                                          1)
-                                                                      .withOpacity(
-                                                                          0.9)
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            duration:
-                                                                const Duration(
-                                                                    seconds: 1),
-                                                            curve: Curves
-                                                                .fastLinearToSlowEaseIn,
-                                                            height: 390,
-                                                            width: 350,
-                                                            child: Column(
-                                                              children: [
-                                                                Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Text(
-                                                                      DateFormat
-                                                                              .E()
-                                                                          .format(
-                                                                        DateTime
-                                                                            .now(),
-                                                                      ),
-                                                                      style:
-                                                                          const TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontWeight:
-                                                                            FontWeight.w900,
-                                                                        fontSize:
-                                                                            25,
-                                                                      ),
                                                                     ),
                                                                     const SizedBox(
-                                                                      width: 10,
+                                                                      height:
+                                                                          10,
                                                                     ),
-                                                                    Text(
-                                                                        'Tot Income: $totalSold',
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              Colors.white,
-                                                                          fontWeight:
-                                                                              FontWeight.w900,
-                                                                          fontSize:
-                                                                              20,
-                                                                        )),
+                                                                    Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          const Text(
+                                                                            'Sold Price',
+                                                                            style:
+                                                                                kkSummaryExpense,
+                                                                          ),
+                                                                          Text(
+                                                                            totalSold.toStringAsFixed(2),
+                                                                            style:
+                                                                                kkSummaryExpense,
+                                                                          ),
+                                                                        ]),
                                                                   ],
                                                                 ),
-                                                                Expanded(
-                                                                  flex: 3,
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .all(
+                                                                          8.0),
                                                                   child:
-                                                                      AnimationLimiter(
-                                                                    child: GridView
-                                                                        .count(
-                                                                      physics: const BouncingScrollPhysics(
-                                                                          parent:
-                                                                              AlwaysScrollableScrollPhysics()),
-                                                                      padding: EdgeInsets
-                                                                          .all(_w /
-                                                                              60),
-                                                                      crossAxisCount:
-                                                                          columnCount,
-                                                                      children: listOfPriceForAdmin
-                                                                          .map(
-                                                                            (e) =>
-                                                                                AnimationConfiguration.staggeredGrid(
-                                                                              position: index,
-                                                                              duration: const Duration(milliseconds: 500),
-                                                                              columnCount: columnCount,
-                                                                              child: ScaleAnimation(
-                                                                                duration: const Duration(milliseconds: 900),
-                                                                                curve: Curves.fastLinearToSlowEaseIn,
-                                                                                child: FadeInAnimation(
-                                                                                  child: Container(
-                                                                                    margin: EdgeInsets.only(bottom: _w / 100, left: _w / 60, right: _w / 60),
-                                                                                    decoration: const BoxDecoration(
-                                                                                      color: Colors.white,
-                                                                                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                                                                                    ),
-                                                                                    child: Column(
-                                                                                      children: [
-                                                                                        Image.asset(
-                                                                                          e['image'],
-                                                                                          width: 40,
-                                                                                        ),
-                                                                                        Padding(
-                                                                                          padding: const EdgeInsets.all(8.0),
-                                                                                          child: Row(
-                                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                            children: [
-                                                                                              const Text(
-                                                                                                'Given',
-                                                                                                style: TextStyle(fontWeight: FontWeight.w900),
-                                                                                              ),
-                                                                                              Text(e['given']),
-                                                                                            ],
-                                                                                          ),
-                                                                                        ),
-                                                                                        Padding(
-                                                                                          padding: const EdgeInsets.all(8.0),
-                                                                                          child: Row(
-                                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                            children: [
-                                                                                              const Text(
-                                                                                                'Sold',
-                                                                                                style: TextStyle(fontWeight: FontWeight.w900),
-                                                                                              ),
-                                                                                              Text(e['sold']),
-                                                                                            ],
-                                                                                          ),
-                                                                                        )
-                                                                                      ],
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ),
+                                                                      SizedBox(
+                                                                    height: 50,
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      children: <
+                                                                          Widget>[
+                                                                        SizedBox(
+                                                                          height:
+                                                                              20,
+                                                                          width:
+                                                                              170,
+                                                                          child:
+                                                                              FAProgressBar(
+                                                                            size:
+                                                                                20,
+                                                                            backgroundColor:
+                                                                                Colors.grey,
+                                                                            progressColor:
+                                                                                Colors.green,
+                                                                            currentValue: totalSold == 0
+                                                                                ? 0
+                                                                                : (totalSold / expectedIncome) * 100,
+                                                                            displayText:
+                                                                                '%',
+                                                                            displayTextStyle:
+                                                                                const TextStyle(
+                                                                              fontWeight: FontWeight.bold,
+                                                                              fontSize: 20,
                                                                             ),
-                                                                          )
-                                                                          .toList(),
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   ),
                                                                 ),
@@ -1064,27 +842,290 @@ class _MainScreenState extends State<MainScreen> {
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceEvenly,
-                                                  ),
+                                                        Icon(
+                                                          isTapped
+                                                              ? Icons
+                                                                  .keyboard_arrow_down
+                                                              : Icons
+                                                                  .keyboard_arrow_up,
+                                                          color: Colors.black,
+                                                          size: 27,
+                                                        ),
+                                                      ],
+                                                    )
+                                                  : Column(
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              flex: 1,
+                                                              child: Image.asset(
+                                                                  'images/employee.png'),
+                                                            ),
+                                                            Expanded(
+                                                              flex: 4,
+                                                              child: Container(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        top: 10,
+                                                                        left:
+                                                                            5),
+                                                                // decoration: BoxDecoration(
+                                                                //   border: Border.all(
+                                                                //     color: Colors.blue,
+                                                                //     width: 2,
+                                                                //   ),
+                                                                // ),
+                                                                child: Column(
+                                                                  children: [
+                                                                    Padding(
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                              8.0),
+                                                                      child:
+                                                                          Row(
+                                                                        children: [
+                                                                          const Text(
+                                                                            'Expected :',
+                                                                            style:
+                                                                                kkSummaryIncome,
+                                                                          ),
+                                                                          Text(
+                                                                            expectedIncome.toStringAsFixed(2),
+                                                                            style:
+                                                                                kkSummaryIncome,
+                                                                          ),
+                                                                        ],
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceBetween,
+                                                                      ),
+                                                                    ),
+                                                                    Padding(
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                              8.0),
+                                                                      child:
+                                                                          Row(
+                                                                        children: [
+                                                                          const Text(
+                                                                            'Sold Price',
+                                                                            style:
+                                                                                kkSummaryExpense,
+                                                                          ),
+                                                                          Text(
+                                                                              totalSold.toStringAsFixed(2),
+                                                                              style: kkSummaryExpense),
+                                                                        ],
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceBetween,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Icon(
+                                                              isTapped
+                                                                  ? Icons
+                                                                      .keyboard_arrow_down
+                                                                  : Icons
+                                                                      .keyboard_arrow_up,
+                                                              color:
+                                                                  Colors.black,
+                                                              size: 27,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Expanded(
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child:
+                                                                AnimatedContainer(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 8.0,
+                                                                      right: 8),
+                                                              margin:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 8.0,
+                                                                      right: 8,
+                                                                      top: 10),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                                gradient:
+                                                                    LinearGradient(
+                                                                  colors: [
+                                                                    const Color
+                                                                            .fromRGBO(
+                                                                        40,
+                                                                        53,
+                                                                        147,
+                                                                        1),
+                                                                    const Color.fromRGBO(
+                                                                            40,
+                                                                            53,
+                                                                            147,
+                                                                            1)
+                                                                        .withOpacity(
+                                                                            0.9)
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              duration:
+                                                                  const Duration(
+                                                                      seconds:
+                                                                          1),
+                                                              curve: Curves
+                                                                  .fastLinearToSlowEaseIn,
+                                                              height: 390,
+                                                              width: 350,
+                                                              child: Column(
+                                                                children: [
+                                                                  Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      Text(
+                                                                        DateFormat.E()
+                                                                            .format(
+                                                                          DateTime
+                                                                              .now(),
+                                                                        ),
+                                                                        style:
+                                                                            const TextStyle(
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontWeight:
+                                                                              FontWeight.w900,
+                                                                          fontSize:
+                                                                              25,
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            10,
+                                                                      ),
+                                                                      Text(
+                                                                          'Tot Income: $totalSold',
+                                                                          style:
+                                                                              const TextStyle(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            fontWeight:
+                                                                                FontWeight.w900,
+                                                                            fontSize:
+                                                                                20,
+                                                                          )),
+                                                                    ],
+                                                                  ),
+                                                                  Expanded(
+                                                                    flex: 3,
+                                                                    child:
+                                                                        AnimationLimiter(
+                                                                      child: GridView
+                                                                          .count(
+                                                                        physics:
+                                                                            const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                                                                        padding:
+                                                                            EdgeInsets.all(_w /
+                                                                                60),
+                                                                        crossAxisCount:
+                                                                            columnCount,
+                                                                        children: listOfPriceForAdmin
+                                                                            .map(
+                                                                              (e) => AnimationConfiguration.staggeredGrid(
+                                                                                position: index,
+                                                                                duration: const Duration(milliseconds: 500),
+                                                                                columnCount: columnCount,
+                                                                                child: ScaleAnimation(
+                                                                                  duration: const Duration(milliseconds: 900),
+                                                                                  curve: Curves.fastLinearToSlowEaseIn,
+                                                                                  child: FadeInAnimation(
+                                                                                    child: Container(
+                                                                                      margin: EdgeInsets.only(bottom: _w / 100, left: _w / 60, right: _w / 60),
+                                                                                      decoration: const BoxDecoration(
+                                                                                        color: Colors.white,
+                                                                                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                                                                                      ),
+                                                                                      child: Column(
+                                                                                        children: [
+                                                                                          Image.asset(
+                                                                                            e['image'],
+                                                                                            width: 40,
+                                                                                          ),
+                                                                                          Padding(
+                                                                                            padding: const EdgeInsets.all(8.0),
+                                                                                            child: Row(
+                                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                              children: [
+                                                                                                const Text(
+                                                                                                  'Given',
+                                                                                                  style: TextStyle(fontWeight: FontWeight.w900),
+                                                                                                ),
+                                                                                                Text(e['given']),
+                                                                                              ],
+                                                                                            ),
+                                                                                          ),
+                                                                                          Padding(
+                                                                                            padding: const EdgeInsets.all(8.0),
+                                                                                            child: Row(
+                                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                              children: [
+                                                                                                const Text(
+                                                                                                  'Sold',
+                                                                                                  style: TextStyle(fontWeight: FontWeight.w900),
+                                                                                                ),
+                                                                                                Text(e['sold']),
+                                                                                              ],
+                                                                                            ),
+                                                                                          )
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            )
+                                                                            .toList(),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                    ),
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
+                                );
+                              },
+                            ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           }),
       floatingActionButton: Align(
@@ -1093,7 +1134,10 @@ class _MainScreenState extends State<MainScreen> {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                  builder: (ctx) => const ProfitAnalaysisScreen()),
+                builder: (ctx) => ProfitAnalaysisScreen(
+                  summaryDataExpense: expense,
+                ),
+              ),
             );
           },
           child: Image.asset('images/graphic-progression.png'),

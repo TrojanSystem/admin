@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MyCustomWidget extends StatefulWidget {
+  const MyCustomWidget({Key key}) : super(key: key);
+
   @override
   _MyCustomWidgetState createState() => _MyCustomWidgetState();
 }

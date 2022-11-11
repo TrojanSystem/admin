@@ -11,7 +11,7 @@ import 'main_screen.dart';
 class HomePage extends StatelessWidget {
   HomePage({Key key}) : super(key: key);
   final List screens = [
-    MainScreen(),
+    const MainScreen(),
     const ProductionPage(),
     OrderScreen(),
     ExpenseScreen(),

@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import '../constants.dart';
 import '../dataHub/data/order_data_hub.dart';
-import '../dataHub/data/production_data_hub.dart';
 import '../data_provider.dart';
 
 class SellerDetail extends StatefulWidget {
@@ -41,8 +40,7 @@ class _SellerDetailState extends State<SellerDetail> {
         .where((element) =>
             DateTime.parse(element['date']).month == widget.selectedMonth)
         .toList();
-    final summaryContractData =
-        Provider.of<ProductionModelData>(context).contractList;
+    final summaryContractData = Provider.of<DataProvider>(context).contractList;
     final filterByYearContract = summaryContractData
         .where((element) =>
             DateTime.parse(element['date']).year == DateTime.now().year)

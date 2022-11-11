@@ -118,7 +118,8 @@ class SlideShowItem extends StatelessWidget {
                 ),
                 Text(
                   totSold.toString(),
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900),
+                  style: const TextStyle(
+                      fontSize: 25, fontWeight: FontWeight.w900),
                 ),
               ],
             ),
@@ -131,7 +132,8 @@ class SlideShowItem extends StatelessWidget {
                 ),
                 Text(
                   totIncome.toStringAsFixed(2),
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900),
+                  style: const TextStyle(
+                      fontSize: 25, fontWeight: FontWeight.w900),
                 ),
               ],
             ),

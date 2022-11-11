@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class DataProvider extends ChangeNotifier {
-  final List<Map<String, dynamic>> production = [];
-  final List<Map<String, dynamic>> expenseList = [];
+  List<QueryDocumentSnapshot<Object>> expenseList = [];
   final List<Map<String, dynamic>> loggedUserList = [];
+  List<QueryDocumentSnapshot<Object>> contractList = [];
   final List<Map<String, dynamic>> adminUserList = [];
-  final List<Map<String, dynamic>> databaseDataForProduction = [];
-  final List<Map<String, dynamic>> databaseDataForShop = [];
+  List<QueryDocumentSnapshot<Object>> databaseDataForProduction = [];
+  List<QueryDocumentSnapshot<Object>> databaseDataForShop = [];
   double totalPrice = 0;
   double totalIncomePrice = 0;
   String loggedUserEmail = '';
@@ -37,43 +37,6 @@ class DataProvider extends ChangeNotifier {
   assign(String expense) {
     dailyExpense = expense;
 
-    notifyListeners();
-  }
-
-  void loadSoldList() async {
-    notifyListeners();
-    await for (var y
-        in FirebaseFirestore.instance.collection('DailyShopSell').snapshots()) {
-      for (var snapSell in y.docs) {
-        notifyListeners();
-        databaseDataForShop.add(snapSell.data());
-      }
-    }
-    notifyListeners();
-  }
-
-  void loadProductionList() async {
-    notifyListeners();
-    await for (var y
-        in FirebaseFirestore.instance.collection('DailySell').snapshots()) {
-      for (var snapSell in y.docs) {
-        notifyListeners();
-        databaseDataForProduction.add(snapSell.data());
-      }
-    }
-    notifyListeners();
-  }
-
-  void loadExpenseList() async {
-    notifyListeners();
-    await for (var y in FirebaseFirestore.instance
-        .collection('EmployeeExpenses')
-        .snapshots()) {
-      for (var snapSell in y.docs) {
-        expenseList.add(snapSell.data());
-        notifyListeners();
-      }
-    }
     notifyListeners();
   }
 

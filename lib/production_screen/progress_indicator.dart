@@ -21,6 +21,7 @@ class _ProgressContainerItemState extends State<ProgressContainerItem> {
   Widget build(BuildContext context) {
     Provider.of<ProductionModelData>(context).totalTask =
         int.parse(widget.dailyProducedItem);
+
     Provider.of<ProductionModelData>(context).taskDone =
         int.parse(widget.soldItem);
     final percent = Provider.of<ProductionModelData>(context).percent();
@@ -42,15 +43,17 @@ class _ProgressContainerItemState extends State<ProgressContainerItem> {
               '$showPercent %',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            progressColor: showPercent < 25
-                ? Colors.blue[900]
-                : showPercent > 25 && showPercent < 50
-                    ? Colors.blue
-                    : showPercent > 50 && showPercent < 75
-                        ? Colors.blueAccent
-                        : showPercent > 75
-                            ? Colors.green
-                            : Colors.red,
+            progressColor: showPercent == 0
+                ? Colors.blueGrey[200]
+                : showPercent > 1 && showPercent < 25
+                    ? Colors.blue[900]
+                    : showPercent > 25 && showPercent < 50
+                        ? Colors.blue
+                        : showPercent > 50 && showPercent < 75
+                            ? Colors.blueAccent
+                            : showPercent > 75
+                                ? Colors.green
+                                : Colors.red,
           ),
           const SizedBox(
             width: 25,

@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../dataHub/data/production_data_hub.dart';
 import '../data_provider.dart';
 import '../drop_down_menu_button.dart';
 import 'contract_list.dart';
@@ -24,7 +23,7 @@ class _ProductionPageState extends State<ProductionPage> {
     'images/slice.png',
     'images/donut.png',
   ];
-
+  List listOfContractGiven = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,52 +40,41 @@ class _ProductionPageState extends State<ProductionPage> {
               );
             }
             final dailyProductionData = snapShot.data.docs;
-            final yearFilter =
-                Provider.of<ProductionModelData>(context).contractList;
-            final monthFilterList = yearFilter
+            listOfContractGiven =
+                Provider.of<DataProvider>(context).contractList;
+            final yearlyFilterForContractGiven = listOfContractGiven
                 .where((element) =>
                     DateTime.parse(element['date']).year == DateTime.now().year)
                 .toList();
-            var monthFilteredContractList = monthFilterList
+            var monthlyFilterForContractGiven = yearlyFilterForContractGiven
                 .where((element) =>
                     DateTime.parse(element['date']).month ==
                     DateTime.now().month)
                 .toList();
-            var todayFilteredContractList = monthFilteredContractList
+            var dailyFilterForContractGiven = monthlyFilterForContractGiven
                 .where((element) =>
                     DateTime.parse(element['date']).day == DateTime.now().day)
                 .toList();
             var totalContractGivenQuantity =
-                todayFilteredContractList.map((e) => e['quantity']).toList();
+                dailyFilterForContractGiven.map((e) => e['quantity']).toList();
             int totContractGivenQuantity = 0;
-            for (int xx = 0; xx < totalContractGivenQuantity.length; xx++) {
+            for (int x = 0; x < totalContractGivenQuantity.length; x++) {
               totContractGivenQuantity +=
-                  int.parse(totalContractGivenQuantity[xx]);
+                  int.parse(totalContractGivenQuantity[x]);
             }
-
+            var totalContractGivenPrice =
+                dailyFilterForContractGiven.map((e) => e['price']).toList();
+            double totalContractGivenPriceSum = 0;
+            for (int x = 0; x < dailyFilterForContractGiven.length; x++) {
+              totalContractGivenPriceSum +=
+                  double.parse(totalContractGivenQuantity[x]) *
+                      double.parse(totalContractGivenPrice[x]);
+            }
 /***
  *
  *
  * EXPENSE list
  * */
-            final expense = Provider.of<DataProvider>(context).expenseList;
-
-            final employeeExpenseYearFilter = expense
-                .where((element) =>
-                    DateTime.parse(element['itemDate']).year ==
-                    DateTime.now().year)
-                .toList();
-
-            var employeeExpenseMonthFilter = employeeExpenseYearFilter
-                .where((element) =>
-                    DateTime.parse(element['itemDate']).month ==
-                    DateTime.now().month)
-                .toList();
-            var employeeExpenseDayFilter = employeeExpenseMonthFilter
-                .where((element) =>
-                    DateTime.parse(element['itemDate']).day ==
-                    DateTime.now().day)
-                .toList();
 
             /***
              *
@@ -373,8 +361,7 @@ class _ProductionPageState extends State<ProductionPage> {
                     ? 0.0
                     : double.parse(employeeSoldDayFilter.last['bombolino_Sp']));
 
-            /*
-                *
+            /* *
                 *
                 *
                 * Sum of ALL SOLD ITEMS
@@ -408,19 +395,24 @@ class _ProductionPageState extends State<ProductionPage> {
             ];
             double totalProducedItemIncome = (totalBombolinoForAdmin +
                 totalSliceForAdmin +
+                totalContractGivenPriceSum +
                 totalBale_10ForAdmin +
                 totalBale_5ForAdmin);
             int totalSoldItemIncome = (totalEmployeeSoldSumBombolino +
                 totalEmployeeSoldSumBale_5 +
+                totContractGivenQuantity +
                 totalEmployeeSoldSumBale_10 +
                 totalEmployeeSoldSumSlice);
-
+            Provider.of<DataProvider>(context).databaseDataForProduction =
+                dailyProductionData;
             return Column(
               children: [
                 Expanded(
                   flex: 3,
                   child: Slide(
-                      soldBale_5: totalEmployeeSoldSumBale_5.toString(),
+                      soldBale_5: (totalEmployeeSoldSumBale_5 +
+                              totContractGivenQuantity)
+                          .toString(),
                       soldBale_10: totalEmployeeSoldSumBale_10.toString(),
                       soldSlice: totalEmployeeSoldSumSlice.toString(),
                       soldBombolino: totalEmployeeSoldSumBombolino.toString(),
@@ -429,7 +421,8 @@ class _ProductionPageState extends State<ProductionPage> {
                       bombolino:
                           totalEmployeeSoldSumBombolinoForAdmin.toString(),
                       slice: totalEmployeeSoldSumSliceForAdmin.toString(),
-                      soldIncomeBale_5: totalBale_5.toString(),
+                      soldIncomeBale_5:
+                          (totalBale_5 + totalContractGivenPriceSum).toString(),
                       soldIncomeBombolino: totalBombolino.toString(),
                       soldIncomeSlice: totalSlice.toString(),
                       soldIncomeBale_10: totalBale_10.toString(),
@@ -438,33 +431,59 @@ class _ProductionPageState extends State<ProductionPage> {
                 ),
                 Expanded(
                   flex: 4,
-                  child: ListView(
-                    children: listOfPriceForAdmin
-                        .map(
-                          (e) => SizedBox(
-                            width: 500,
-                            height: 80,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Image.asset(
-                                  e['image'],
-                                  width: 45,
-                                  height: 45,
-                                ),
-                                ProgressContainerItem(
-                                  soldItem: e['sold'],
-                                  dailyProducedItem:
-                                      dailyProductionDayFilter.isEmpty
-                                          ? '0'
-                                          : e['produced'],
-                                ),
-                              ],
+                  child: RefreshIndicator(
+                    onRefresh: () {
+                      return Future.delayed(
+                        const Duration(seconds: 1),
+                        () {
+                          /// adding elements in list after [1 seconds] delay
+                          /// to mimic network call
+                          ///
+                          /// Remember: setState is necessary so that
+                          /// build method will run again otherwise
+                          /// list will not show all elements
+                          setState(() {
+                            listOfContractGiven.length;
+                          });
+
+                          // showing snackbar
+                          // _scaffoldKey.currentState.showSnackBar(
+                          //   SnackBar(
+                          //     content: const Text('Page Refreshed'),
+                          //   ),
+                          // );
+                        },
+                      );
+                    },
+                    child: ListView(
+                      children: listOfPriceForAdmin
+                          .map(
+                            (e) => SizedBox(
+                              width: 500,
+                              height: 80,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Image.asset(
+                                    e['image'],
+                                    width: 45,
+                                    height: 45,
+                                  ),
+                                  ProgressContainerItem(
+                                    soldItem: e['sold'],
+                                    dailyProducedItem:
+                                        dailyProductionDayFilter.isEmpty
+                                            ? '0'
+                                            : e['produced'],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        )
-                        .toList(),
+                          )
+                          .toList(),
+                    ),
                   ),
                 )
               ],
