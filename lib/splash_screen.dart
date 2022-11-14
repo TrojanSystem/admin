@@ -67,8 +67,8 @@ class _MyCustomSplashScreenState extends State<MyCustomSplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: const Color.fromRGBO(3, 83, 151, 1),
@@ -79,7 +79,7 @@ class _MyCustomSplashScreenState extends State<MyCustomSplashScreen>
               AnimatedContainer(
                   duration: const Duration(milliseconds: 2000),
                   curve: Curves.fastLinearToSlowEaseIn,
-                  height: height / _fontSize),
+                  height: _height / _fontSize),
               AnimatedOpacity(
                 duration: const Duration(milliseconds: 1000),
                 opacity: _textOpacity,
@@ -107,8 +107,8 @@ class _MyCustomSplashScreenState extends State<MyCustomSplashScreen>
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 2000),
                     curve: Curves.fastLinearToSlowEaseIn,
-                    height: width / _containerSize,
-                    width: width / _containerSize,
+                    height: _width / _containerSize,
+                    width: _width / _containerSize,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: Colors.white,
