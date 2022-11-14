@@ -68,7 +68,7 @@ class FileHandlerForExpense extends ChangeNotifier {
 // Draw table in the PDF page.
     grid.draw(page: page, bounds: const Rect.fromLTWH(0, 0, 0, 0));
 // Save the document.
-    List<int> bytes = document.save();
+    List<int> bytes =await document.save();
     document.dispose();
     saveAndLaunch(bytes, 'Daily Expense Report.pdf');
     // File('PDFTable.pdf').writeAsBytes(document.save());
