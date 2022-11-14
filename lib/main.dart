@@ -1,7 +1,7 @@
-import 'package:ada_bread/crediential/login_screen.dart';
 import 'package:ada_bread/data_provider.dart';
 import 'package:ada_bread/order_screen/order_pdf_report.dart';
 import 'package:ada_bread/production_screen/contract_pdf_report.dart';
+import 'package:ada_bread/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,9 +38,7 @@ class _AdaBreadState extends State<AdaBread> {
           create: (BuildContext context) => DataStorage(),
         ),
         ChangeNotifierProvider(
-            create: (BuildContext context) => DataProvider()
-              //..loadSoldList()
-              ..loadLoggedUser()
+            create: (BuildContext context) => DataProvider()..loadLoggedUser()
             //..loadProductionList(),
             ),
         ChangeNotifierProvider(
@@ -63,7 +61,7 @@ class _AdaBreadState extends State<AdaBread> {
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: SignInScreen(),
+        home: MyCustomSplashScreen(),
       ),
     );
   }

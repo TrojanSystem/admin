@@ -92,19 +92,6 @@ class _MainScreenState extends State<MainScreen> {
             var totalMonthlyExpensesForMainScreen =
                 dailyExpenseForMainScreen.map((e) => e['itemPrice']).toList();
 
-            var totalMonthlyExpensesQuantityForMainScreen =
-                dailyExpenseForMainScreen
-                    .map((e) => e['itemQuantity'])
-                    .toList();
-
-            var totMonthlyExpenseSumForMainScreen = 0.0;
-            for (int xx = 0;
-                xx < totalMonthlyExpensesForMainScreen.length;
-                xx++) {
-              totMonthlyExpenseSumForMainScreen += (double.parse(
-                      totalMonthlyExpensesForMainScreen[xx]) *
-                  double.parse(totalMonthlyExpensesQuantityForMainScreen[xx]));
-            }
             final productionData = snap.data.docs;
             final loggedInEmployee =
                 Provider.of<DataProvider>(context).loggedUserList;
